@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowLeft, Brain, Target, Zap } from "lucide-react";
+import { Shield, Brain, Target, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const About = () => {
@@ -10,14 +10,23 @@ const About = () => {
       {/* Navigation */}
       <nav className="glass-card border-b border-border/50">
         <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/")}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold glow-text">TruthGuard</span>
+              <Shield className="h-8 w-8 text-primary cursor-pointer" onClick={() => navigate("/")} />
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="cursor-pointer text-foreground hover:text-primary transition-colors" onClick={() => navigate("/")}>
+                Home
+              </div>
+              <div className="text-primary font-medium">
+                About
+              </div>
+              <div className="cursor-pointer text-foreground hover:text-primary transition-colors" onClick={() => navigate("/contact")}>
+                Contact
+              </div>
+              <Button onClick={() => navigate("/auth")} className="bg-gradient-hero">
+                Sign In
+              </Button>
             </div>
           </div>
         </div>

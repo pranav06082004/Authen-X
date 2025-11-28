@@ -9,16 +9,21 @@ const Landing = () => {
       <nav className="fixed top-0 w-full z-50 glass-card border-b border-border/50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2">
               <Shield className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold glow-text">TruthGuard</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link to="/auth">
-                <Button variant="ghost">Sign In</Button>
+            </Link>
+            <div className="flex items-center gap-6">
+              <Link to="/" className="text-primary font-medium">
+                Home
+              </Link>
+              <Link to="/about" className="text-foreground hover:text-primary transition-colors">
+                About
+              </Link>
+              <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
+                Contact
               </Link>
               <Link to="/auth">
-                <Button className="bg-gradient-hero">Get Started</Button>
+                <Button className="bg-gradient-hero">Sign In</Button>
               </Link>
             </div>
           </div>

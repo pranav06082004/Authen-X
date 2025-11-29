@@ -161,7 +161,7 @@ const Landing = () => {
           <div className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto">
             <h2 className="text-4xl font-bold mb-6">Ready to Verify Truth?</h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Join thousands using TruthGuard to combat misinformation
+              Join thousands using AuthenX to combat misinformation
             </p>
             <Link to="/auth">
               <Button size="lg" className="bg-gradient-hero text-lg px-8">
@@ -175,7 +175,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border/50">
         <div className="container mx-auto text-center text-muted-foreground">
-          <p>© 2025 TruthGuard. AI Fake News Detection Platform.</p>
+          <p>© 2025 AuthenX. AI-Powered Authenticity Detection Platform.</p>
         </div>
       </footer>
     </div>

@@ -32,10 +32,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         setIsLoading(false);
 
-        // Defer role fetching with setTimeout to avoid deadlock
+        // Defer role fetching and email sending with setTimeout to avoid deadlock
         if (session?.user) {
-          setTimeout(() => {
-            fetchUserRole(session.user.id);
+          setTimeout(async () => {
+            await fetchUserRole(session.user.id);
+            
+            // Send welcome email for new signups (checking metadata to determine if it's a new user)
+            if (event === 'SIGNED_IN' && session.user.email) {
+              try {
+                await supabase.functions.invoke('welcome-email', {
+                  body: {
+                    email: session.user.email,
+                    name: session.user.user_metadata?.full_name || 'User',
+                  },
+                });
+              } catch (error) {
+                console.error('Error sending welcome email:', error);
+              }
+            }
           }, 0);
         } else {
           setUserRole(null);

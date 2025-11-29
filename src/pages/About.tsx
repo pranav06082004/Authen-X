@@ -35,11 +35,11 @@ const About = () => {
       {/* Content */}
       <div className="container mx-auto px-6 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6 glow-text">About TruthGuard</h1>
+          <h1 className="text-5xl font-bold mb-6 glow-text">About AuthenX</h1>
           
           <div className="prose prose-invert max-w-none space-y-8">
             <p className="text-xl text-muted-foreground">
-              TruthGuard is an AI-powered platform designed to combat misinformation 
+              AuthenX is an AI-powered platform designed to combat misinformation 
               by analyzing news articles and providing credibility assessments in real-time.
             </p>
 
@@ -73,7 +73,7 @@ const About = () => {
               <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
               <p className="text-muted-foreground mb-4">
                 In an age of information overload, distinguishing fact from fiction has become 
-                increasingly challenging. TruthGuard was created to empower users with the tools 
+                increasingly challenging. AuthenX was created to empower users with the tools 
                 they need to verify information quickly and accurately.
               </p>
               <p className="text-muted-foreground">
@@ -87,7 +87,7 @@ const About = () => {
             <div className="glass-card p-8 rounded-xl">
               <h2 className="text-3xl font-bold mb-4">Technology</h2>
               <p className="text-muted-foreground mb-4">
-                TruthGuard utilizes cutting-edge AI models including:
+                AuthenX utilizes cutting-edge AI models including:
               </p>
               <ul className="list-disc list-inside text-muted-foreground space-y-2">
                 <li>Transformer-based language models for semantic understanding</li>
@@ -104,7 +104,7 @@ const About = () => {
                 className="bg-gradient-hero text-lg px-8"
                 onClick={() => navigate("/auth")}
               >
-                Start Using TruthGuard
+                Start Using AuthenX
               </Button>
             </div>
           </div>

@@ -2,3 +2,6 @@ project_id = "ymxuygbgdubwufpqrkjd"
 
 [functions.analyze-news]
 verify_jwt = true
+
+[functions.welcome-email]
+verify_jwt = false

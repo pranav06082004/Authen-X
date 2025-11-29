@@ -64,7 +64,7 @@ const Contact = () => {
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold mb-6 glow-text">Get in Touch</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Have questions about TruthGuard? We're here to help. Send us a message 
+              Have questions about AuthenX? We're here to help. Send us a message 
               and we'll respond as soon as possible.
             </p>
           </div>
@@ -149,8 +149,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold mb-2">Email Us</h3>
-                    <p className="text-muted-foreground">support@truthguard.ai</p>
-                    <p className="text-muted-foreground">info@truthguard.ai</p>
+                    <p className="text-muted-foreground">support@authenx.ai</p>
+                    <p className="text-muted-foreground">info@authenx.ai</p>
                   </div>
                 </div>
               </div>
@@ -192,7 +192,7 @@ const Contact = () => {
                 </p>
                 <Link to="/about">
                   <Button variant="outline" className="w-full">
-                    Learn More About TruthGuard
+                    Learn More About AuthenX
                   </Button>
                 </Link>
               </div>

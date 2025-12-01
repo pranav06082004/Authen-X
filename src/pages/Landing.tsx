@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Shield, Zap, BarChart3, Lock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Shield3DCanvas } from "@/components/Shield3DCanvas";
+import { useParallax } from "@/hooks/useParallax";
+import { useState } from "react";
 
 const Landing = () => {
+  const scrollY = useParallax();
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -31,25 +37,56 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="container mx-auto text-center">
-          <div className="inline-block mb-6 px-4 py-2 glass-card rounded-full">
+      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
+        {/* Parallax background elements */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            transform: `translateY(${scrollY * 0.3}px)`,
+          }}
+        >
+          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
+        </div>
+
+        <div className="container mx-auto text-center relative z-10">
+          <div 
+            className="inline-block mb-6 px-4 py-2 glass-card rounded-full"
+            style={{
+              transform: `translateY(${scrollY * 0.1}px)`,
+            }}
+          >
             <span className="text-sm text-secondary font-medium">AI-Powered Truth Detection</span>
           </div>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 glow-text">
+          <h1 
+            className="text-6xl md:text-7xl font-bold mb-6 glow-text"
+            style={{
+              transform: `translateY(${scrollY * 0.15}px)`,
+            }}
+          >
             Stop Fake News<br />
             <span className="bg-gradient-hero bg-clip-text text-transparent">
               With AI Precision
             </span>
           </h1>
           
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+          <p 
+            className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            style={{
+              transform: `translateY(${scrollY * 0.2}px)`,
+            }}
+          >
             Advanced machine learning algorithms analyze news articles in real-time, 
             providing instant credibility scores and detailed analysis.
           </p>
 
-          <div className="flex gap-4 justify-center">
+          <div 
+            className="flex gap-4 justify-center"
+            style={{
+              transform: `translateY(${scrollY * 0.25}px)`,
+            }}
+          >
             <Link to="/auth">
               <Button size="lg" className="bg-gradient-hero text-lg px-8">
                 Start Analyzing <ArrowRight className="ml-2" />
@@ -62,11 +99,14 @@ const Landing = () => {
             </Link>
           </div>
 
-          {/* Hero Image Placeholder */}
-          <div className="mt-16 glass-card rounded-2xl p-8 max-w-4xl mx-auto animate-glow">
-            <div className="aspect-video bg-gradient-card rounded-xl flex items-center justify-center">
-              <Shield className="h-32 w-32 text-primary opacity-20" />
-            </div>
+          {/* 3D Shield */}
+          <div 
+            className="mt-16 max-w-4xl mx-auto"
+            style={{
+              transform: `translateY(${scrollY * -0.1}px)`,
+            }}
+          >
+            <Shield3DCanvas />
           </div>
         </div>
       </section>
@@ -80,38 +120,55 @@ const Landing = () => {
           </p>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass-card p-8 rounded-xl hover:scale-105 transition-transform">
-              <div className="w-14 h-14 rounded-xl bg-gradient-hero flex items-center justify-center mb-6">
-                <Zap className="h-7 w-7 text-white" />
+            {[
+              {
+                icon: Zap,
+                title: "Instant Analysis",
+                description: "Get real-time credibility scores and detailed analysis within seconds. Our AI processes articles at lightning speed.",
+                gradient: "bg-gradient-hero"
+              },
+              {
+                icon: BarChart3,
+                title: "Confidence Scoring",
+                description: "Receive detailed confidence percentages and key phrase analysis to understand the reasoning behind each verdict.",
+                gradient: "bg-gradient-success"
+              },
+              {
+                icon: Lock,
+                title: "Secure & Private",
+                description: "Your data is encrypted and protected. Track your analysis history privately with role-based access control.",
+                gradient: "bg-gradient-warning"
+              }
+            ].map((feature, index) => (
+              <div
+                key={index}
+                className="glass-card p-8 rounded-xl transition-all duration-300 cursor-pointer"
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
+                style={{
+                  transform: hoveredCard === index 
+                    ? 'translateY(-12px) rotateX(5deg) scale(1.03)' 
+                    : 'translateY(0) rotateX(0) scale(1)',
+                  boxShadow: hoveredCard === index 
+                    ? '0 20px 40px rgba(34, 211, 238, 0.3)' 
+                    : '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                <div 
+                  className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6 transition-transform duration-300`}
+                  style={{
+                    transform: hoveredCard === index ? 'translateZ(20px) rotateY(10deg)' : 'translateZ(0)',
+                  }}
+                >
+                  <feature.icon className="h-7 w-7 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                <p className="text-muted-foreground">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-2xl font-bold mb-4">Instant Analysis</h3>
-              <p className="text-muted-foreground">
-                Get real-time credibility scores and detailed analysis within seconds. 
-                Our AI processes articles at lightning speed.
-              </p>
-            </div>
-
-            <div className="glass-card p-8 rounded-xl hover:scale-105 transition-transform">
-              <div className="w-14 h-14 rounded-xl bg-gradient-success flex items-center justify-center mb-6">
-                <BarChart3 className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Confidence Scoring</h3>
-              <p className="text-muted-foreground">
-                Receive detailed confidence percentages and key phrase analysis 
-                to understand the reasoning behind each verdict.
-              </p>
-            </div>
-
-            <div className="glass-card p-8 rounded-xl hover:scale-105 transition-transform">
-              <div className="w-14 h-14 rounded-xl bg-gradient-warning flex items-center justify-center mb-6">
-                <Lock className="h-7 w-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Secure & Private</h3>
-              <p className="text-muted-foreground">
-                Your data is encrypted and protected. Track your analysis history 
-                privately with role-based access control.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>

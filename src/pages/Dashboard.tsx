@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import AnalysisResult from "@/components/AnalysisResult";
 import { MediaUpload } from "@/components/MediaUpload";
-import { AnalysisCharts } from "@/components/AnalysisCharts";
+// import { AnalysisCharts } from "@/components/AnalysisCharts"; // Temporarily disabled until dependencies install
 
 const Dashboard = () => {
   const { user, userRole } = useAuth();
@@ -196,7 +196,15 @@ const Dashboard = () => {
           {result && (
             <div className="space-y-6">
               <AnalysisResult result={result} />
-              <AnalysisCharts />
+              {/* Charts temporarily disabled until react-is dependency installs */}
+              {/* <AnalysisCharts /> */}
+              <Card className="glass-card border-2">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground text-center">
+                    📊 Advanced charts and visualizations will appear here once dependencies finish installing.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           )}
         </div>

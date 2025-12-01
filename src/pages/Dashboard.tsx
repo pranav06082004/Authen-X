@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, LogOut, History, User, Layout } from "lucide-react";
+import { Shield, LogOut, History, User, Layout, Image, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import AnalysisResult from "@/components/AnalysisResult";
+import { MediaUpload } from "@/components/MediaUpload";
+import { AnalysisCharts } from "@/components/AnalysisCharts";
 
 const Dashboard = () => {
   const { user, userRole } = useAuth();
@@ -19,6 +21,7 @@ const Dashboard = () => {
   const [inputUrl, setInputUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [uploadedMediaUrls, setUploadedMediaUrls] = useState<string[]>([]);
 
   if (!user) {
     navigate("/auth");
@@ -104,13 +107,20 @@ const Dashboard = () => {
           <Card className="glass-card mb-8">
             <CardHeader>
               <CardTitle>Submit Content</CardTitle>
-              <CardDescription>Choose text input or URL analysis</CardDescription>
+              <CardDescription>Choose text input, URL analysis, or upload media</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="text">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="text">Text Input</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="text">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Text Input
+                  </TabsTrigger>
                   <TabsTrigger value="url">URL</TabsTrigger>
+                  <TabsTrigger value="media">
+                    <Image className="h-4 w-4 mr-2" />
+                    Media
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="text" className="space-y-4">
@@ -152,11 +162,43 @@ const Dashboard = () => {
                     {isAnalyzing ? "Analyzing..." : "Analyze URL"}
                   </Button>
                 </TabsContent>
+                <TabsContent value="media" className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Upload Images or Videos</Label>
+                    <MediaUpload 
+                      onMediaUploaded={(urls) => setUploadedMediaUrls(urls)} 
+                    />
+                  </div>
+                  {uploadedMediaUrls.length > 0 && (
+                    <div className="space-y-2">
+                      <Label htmlFor="media-context">Context (Optional)</Label>
+                      <Textarea
+                        id="media-context"
+                        placeholder="Add context about the uploaded media..."
+                        rows={4}
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                      />
+                    </div>
+                  )}
+                  <Button
+                    className="w-full bg-gradient-hero"
+                    onClick={() => handleAnalyze('text')}
+                    disabled={uploadedMediaUrls.length === 0 || isAnalyzing}
+                  >
+                    {isAnalyzing ? "Analyzing..." : "Analyze Media"}
+                  </Button>
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
 
-          {result && <AnalysisResult result={result} />}
+          {result && (
+            <div className="space-y-6">
+              <AnalysisResult result={result} />
+              <AnalysisCharts />
+            </div>
+          )}
         </div>
       </div>
     </div>

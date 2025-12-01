@@ -89,20 +89,22 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
-const ChartTooltipContent = React.forwardRef<
-  HTMLDivElement,
-  Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, "content"> &
-    React.ComponentProps<"div"> & {
-      hideLabel?: boolean;
-      hideIndicator?: boolean;
-      indicator?: "line" | "dot" | "dashed";
-      nameKey?: string;
-      labelKey?: string;
-      active?: boolean;
-      payload?: any[];
-      label?: string;
-    }
->(
+interface ChartTooltipContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+  hideLabel?: boolean;
+  hideIndicator?: boolean;
+  indicator?: "line" | "dot" | "dashed";
+  nameKey?: string;
+  labelKey?: string;
+  labelFormatter?: (label: any, payload: any[]) => React.ReactNode;
+  formatter?: (value: any, name: any, item: any, index: number, payload: any[]) => React.ReactNode;
+  color?: string;
+  labelClassName?: string;
+}
+
+const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContentProps>(
   (
     {
       active,
@@ -118,6 +120,7 @@ const ChartTooltipContent = React.forwardRef<
       color,
       nameKey,
       labelKey,
+      ...props
     },
     ref,
   ) => {
@@ -160,6 +163,7 @@ const ChartTooltipContent = React.forwardRef<
           "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
           className,
         )}
+        {...props}
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">

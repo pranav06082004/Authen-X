@@ -6,6 +6,7 @@ import { useParallax } from "@/hooks/useParallax";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { StatsCounter } from "@/components/StatsCounter";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
+import { AnimatedSection } from "@/components/AnimatedSection";
 import { useState } from "react";
 
 const Landing = () => {
@@ -123,10 +124,12 @@ const Landing = () => {
       {/* Features Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4">Powerful Features</h2>
-          <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
-            Built with cutting-edge technology to ensure accuracy and reliability
-          </p>
+          <AnimatedSection>
+            <h2 className="text-4xl font-bold text-center mb-4">Powerful Features</h2>
+            <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
+              Built with cutting-edge technology to ensure accuracy and reliability
+            </p>
+          </AnimatedSection>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -149,34 +152,35 @@ const Landing = () => {
                 gradient: "bg-gradient-warning"
               }
             ].map((feature, index) => (
-              <div
-                key={index}
-                className="glass-card p-8 rounded-xl transition-all duration-300 cursor-pointer"
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
-                style={{
-                  transform: hoveredCard === index 
-                    ? 'translateY(-12px) rotateX(5deg) scale(1.03)' 
-                    : 'translateY(0) rotateX(0) scale(1)',
-                  boxShadow: hoveredCard === index 
-                    ? '0 20px 40px rgba(34, 211, 238, 0.3)' 
-                    : '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  transformStyle: 'preserve-3d',
-                }}
-              >
-                <div 
-                  className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6 transition-transform duration-300`}
+              <AnimatedSection key={index} delay={index * 150} direction="up">
+                <div
+                  className="glass-card p-8 rounded-xl transition-all duration-300 cursor-pointer h-full"
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
                   style={{
-                    transform: hoveredCard === index ? 'translateZ(20px) rotateY(10deg)' : 'translateZ(0)',
+                    transform: hoveredCard === index 
+                      ? 'translateY(-12px) rotateX(5deg) scale(1.03)' 
+                      : 'translateY(0) rotateX(0) scale(1)',
+                    boxShadow: hoveredCard === index 
+                      ? '0 20px 40px rgba(34, 211, 238, 0.3)' 
+                      : '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    transformStyle: 'preserve-3d',
                   }}
                 >
-                  <feature.icon className="h-7 w-7 text-white" />
+                  <div 
+                    className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6 transition-transform duration-300`}
+                    style={{
+                      transform: hoveredCard === index ? 'translateZ(20px) rotateY(10deg)' : 'translateZ(0)',
+                    }}
+                  >
+                    <feature.icon className="h-7 w-7 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                  <p className="text-muted-foreground">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
-                <p className="text-muted-foreground">
-                  {feature.description}
-                </p>
-              </div>
+              </AnimatedSection>
             ))}
           </div>
         </div>
@@ -185,38 +189,26 @@ const Landing = () => {
       {/* How It Works */}
       <section className="py-20 px-6 bg-card/30">
         <div className="container mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
+          <AnimatedSection>
+            <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
+          </AnimatedSection>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold mx-auto mb-6">
-                1
-              </div>
-              <h3 className="text-xl font-bold mb-4">Input Content</h3>
-              <p className="text-muted-foreground">
-                Paste news article text or provide a URL to analyze
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold mx-auto mb-6">
-                2
-              </div>
-              <h3 className="text-xl font-bold mb-4">AI Analysis</h3>
-              <p className="text-muted-foreground">
-                Our AI model processes and evaluates credibility
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold mx-auto mb-6">
-                3
-              </div>
-              <h3 className="text-xl font-bold mb-4">Get Results</h3>
-              <p className="text-muted-foreground">
-                Receive verdict, confidence score, and key insights
-              </p>
-            </div>
+            {[
+              { step: 1, title: "Input Content", desc: "Paste news article text or provide a URL to analyze" },
+              { step: 2, title: "AI Analysis", desc: "Our AI model processes and evaluates credibility" },
+              { step: 3, title: "Get Results", desc: "Receive verdict, confidence score, and key insights" },
+            ].map((item, index) => (
+              <AnimatedSection key={item.step} delay={index * 200} direction="up">
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+                    {item.step}
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">{item.title}</h3>
+                  <p className="text-muted-foreground">{item.desc}</p>
+                </div>
+              </AnimatedSection>
+            ))}
           </div>
         </div>
       </section>
@@ -227,17 +219,19 @@ const Landing = () => {
       {/* CTA Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto">
-          <div className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold mb-6">Ready to Verify Truth?</h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Join thousands using AuthenX to combat misinformation
-            </p>
-            <Link to="/auth">
-              <Button size="lg" className="bg-gradient-hero text-lg px-8">
-                Get Started for Free
-              </Button>
-            </Link>
-          </div>
+          <AnimatedSection direction="up">
+            <div className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto">
+              <h2 className="text-4xl font-bold mb-6">Ready to Verify Truth?</h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                Join thousands using AuthenX to combat misinformation
+              </p>
+              <Link to="/auth">
+                <Button size="lg" className="bg-gradient-hero text-lg px-8">
+                  Get Started for Free
+                </Button>
+              </Link>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 

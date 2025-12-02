@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Shield3DCanvas } from "@/components/Shield3DCanvas";
 import { useParallax } from "@/hooks/useParallax";
 import { ParticleBackground } from "@/components/ParticleBackground";
+import { StatsCounter } from "@/components/StatsCounter";
 import { useState } from "react";
 
 const Landing = () => {
@@ -114,6 +115,9 @@ const Landing = () => {
           </div>
         </div>
       </section>
+
+      {/* Stats Counter */}
+      <StatsCounter />
 
       {/* Features Section */}
       <section className="py-20 px-6">

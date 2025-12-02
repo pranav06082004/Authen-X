@@ -5,6 +5,7 @@ import { Shield3DCanvas } from "@/components/Shield3DCanvas";
 import { useParallax } from "@/hooks/useParallax";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { StatsCounter } from "@/components/StatsCounter";
+import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { useState } from "react";
 
 const Landing = () => {
@@ -219,6 +220,9 @@ const Landing = () => {
           </div>
         </div>
       </section>
+
+      {/* Testimonials */}
+      <TestimonialsCarousel />
 
       {/* CTA Section */}
       <section className="py-20 px-6">

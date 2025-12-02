@@ -3,6 +3,7 @@ import { Shield, Zap, BarChart3, Lock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Shield3DCanvas } from "@/components/Shield3DCanvas";
 import { useParallax } from "@/hooks/useParallax";
+import { ParticleBackground } from "@/components/ParticleBackground";
 import { useState } from "react";
 
 const Landing = () => {
@@ -10,7 +11,10 @@ const Landing = () => {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Particle Background */}
+      <ParticleBackground />
+      
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 glass-card border-b border-border/50">
         <div className="container mx-auto px-6 py-4">

@@ -7,6 +7,7 @@ import { ParticleBackground } from "@/components/ParticleBackground";
 import { StatsCounter } from "@/components/StatsCounter";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { useState } from "react";
 
 const Landing = () => {
@@ -236,9 +237,28 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-border/50">
-        <div className="container mx-auto text-center text-muted-foreground">
-          <p>© 2025 AuthenX. AI-Powered Authenticity Detection Platform.</p>
+      <footer className="py-12 px-6 border-t border-border/50 bg-card/20">
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="h-6 w-6 text-primary" />
+                <span className="font-bold text-lg">AuthenX</span>
+              </div>
+              <p className="text-sm text-muted-foreground text-center md:text-left">
+                AI-Powered Authenticity Detection Platform
+              </p>
+            </div>
+            
+            <div className="flex flex-col items-center md:items-end gap-3">
+              <p className="text-sm font-medium">Subscribe to our newsletter</p>
+              <NewsletterSignup />
+            </div>
+          </div>
+          
+          <div className="mt-8 pt-6 border-t border-border/30 text-center text-sm text-muted-foreground">
+            <p>© 2025 AuthenX. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>

@@ -68,6 +68,51 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  .light {
+    /* Light mode colors */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 221 83% 65%;
+
+    --secondary: 188 94% 43%;
+    --secondary-foreground: 0 0% 100%;
+
+    --warning: 24 95% 53%;
+    --warning-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --uncertain: 215 20% 45%;
+    --uncertain-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 20% 45%;
+
+    --accent: 188 94% 43%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 85%;
+    --input: 214 32% 85%;
+    --ring: 221 83% 53%;
+
+    /* Light mode shadows */
+    --shadow-glow: 0 0 40px hsl(221 83% 53% / 0.2);
+    --shadow-card: 0 10px 30px -10px hsl(222 47% 50% / 0.15);
+  }
+
   .dark {
     --background: 222 47% 11%;
     --foreground: 210 40% 98%;

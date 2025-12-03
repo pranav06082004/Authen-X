@@ -9,6 +9,7 @@ import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { FAQSection } from "@/components/FAQSection";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useState } from "react";
 
 const Landing = () => {
@@ -37,6 +38,7 @@ const Landing = () => {
               <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
                 Contact
               </Link>
+              <ThemeToggle />
               <Link to="/auth">
                 <Button className="bg-gradient-hero">Sign In</Button>
               </Link>

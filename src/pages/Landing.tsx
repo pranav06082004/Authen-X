@@ -8,6 +8,7 @@ import { StatsCounter } from "@/components/StatsCounter";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
+import { FAQSection } from "@/components/FAQSection";
 import { useState } from "react";
 
 const Landing = () => {
@@ -216,6 +217,9 @@ const Landing = () => {
 
       {/* Testimonials */}
       <TestimonialsCarousel />
+
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* CTA Section */}
       <section className="py-20 px-6">

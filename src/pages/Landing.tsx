@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Zap, BarChart3, Lock, ArrowRight } from "lucide-react";
+import { Shield, Zap, BarChart3, Lock, ArrowRight, Twitter, Github, Linkedin, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Shield3DCanvas } from "@/components/Shield3DCanvas";
 import { useParallax } from "@/hooks/useParallax";
@@ -241,27 +241,73 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-border/50 bg-card/20">
+      <footer className="py-16 px-6 border-t border-border/50 bg-card/20">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex flex-col items-center md:items-start gap-2">
-              <div className="flex items-center gap-2 mb-2">
-                <Shield className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">AuthenX</span>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <Shield className="h-7 w-7 text-primary" />
+                <span className="font-bold text-xl">AuthenX</span>
               </div>
-              <p className="text-sm text-muted-foreground text-center md:text-left">
-                AI-Powered Authenticity Detection Platform
+              <p className="text-sm text-muted-foreground mb-6">
+                AI-Powered Authenticity Detection Platform. Fighting misinformation with cutting-edge technology.
               </p>
+              <div className="flex gap-4">
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                  <Twitter className="h-5 w-5" />
+                </a>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                  <Github className="h-5 w-5" />
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                  <Linkedin className="h-5 w-5" />
+                </a>
+                <a href="mailto:contact@authenx.com" className="text-muted-foreground hover:text-primary transition-colors">
+                  <Mail className="h-5 w-5" />
+                </a>
+              </div>
             </div>
-            
-            <div className="flex flex-col items-center md:items-end gap-3">
-              <p className="text-sm font-medium">Subscribe to our newsletter</p>
+
+            {/* Product Links */}
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li><Link to="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
+                <li><Link to="/history" className="hover:text-primary transition-colors">Analysis History</Link></li>
+                <li><a href="#" className="hover:text-primary transition-colors">API Access</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Pricing</a></li>
+              </ul>
+            </div>
+
+            {/* Company Links */}
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
+              </ul>
+            </div>
+
+            {/* Newsletter */}
+            <div>
+              <h4 className="font-semibold mb-4">Stay Updated</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Subscribe to our newsletter for the latest updates.
+              </p>
               <NewsletterSignup />
             </div>
           </div>
           
-          <div className="mt-8 pt-6 border-t border-border/30 text-center text-sm text-muted-foreground">
+          <div className="pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>© 2025 AuthenX. All rights reserved.</p>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-primary transition-colors">Cookie Policy</a>
+            </div>
           </div>
         </div>
       </footer>

@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Eye, EyeOff, CheckCircle2, XCircle, Lock, Mail, User } from "lucide-react";
+import { Shield, Eye, EyeOff, CheckCircle2, XCircle, Lock, Mail, User, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -16,11 +16,22 @@ const passwordSchema = z.string().min(6, "Password must be at least 6 characters
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [activeTab, setActiveTab] = useState("signin");
+  const [view, setView] = useState<"auth" | "forgot" | "reset">("auth");
+  const [resetEmail, setResetEmail] = useState("");
+
+  // Check if user came from password reset link
+  useEffect(() => {
+    const type = searchParams.get("type");
+    if (type === "recovery") {
+      setView("reset");
+    }
+  }, [searchParams]);
 
   const getPasswordStrength = (pwd: string) => {
     let strength = 0;
@@ -122,6 +133,73 @@ const Auth = () => {
       toast.error(error.message);
     } else {
       toast.success("Signed in successfully!");
+      navigate("/dashboard");
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      emailSchema.parse(resetEmail);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/auth?type=recovery`,
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Password reset link sent! Check your email.");
+      setView("auth");
+      setResetEmail("");
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const newPassword = formData.get("new-password") as string;
+    const confirmPassword = formData.get("confirm-password") as string;
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      passwordSchema.parse(newPassword);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Password updated successfully!");
+      setView("auth");
+      setPassword("");
       navigate("/dashboard");
     }
   };
@@ -265,12 +343,146 @@ const Auth = () => {
           </div>
 
           <Card className="bg-[#0a0a0a] border border-[#222] rounded-2xl shadow-2xl">
-            <CardHeader>
-              <CardTitle className="text-2xl text-white">Secure Access Made Simple</CardTitle>
-              <CardDescription className="text-gray-400">Sign in to your account or create a new one</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {view === "forgot" ? (
+              <>
+                <CardHeader>
+                  <button
+                    onClick={() => setView("auth")}
+                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-2 text-sm"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to sign in
+                  </button>
+                  <CardTitle className="text-2xl text-white">Reset Password</CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Enter your email and we'll send you a reset link
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleForgotPassword} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-email" className="flex items-center gap-2 text-gray-300">
+                        <Mail className="h-4 w-4" />
+                        Email
+                      </Label>
+                      <Input
+                        id="reset-email"
+                        type="email"
+                        placeholder="your@email.com"
+                        required
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        className="h-11 bg-[#1a1a1a] border-[#333] text-white placeholder:text-gray-500 focus:border-[#8b7cf6] rounded-lg"
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full h-11 bg-gradient-to-r from-[#8b7cf6] to-[#6366f1] hover:from-[#9d8ff8] hover:to-[#7577f3] text-white text-lg font-semibold rounded-lg transition-all shadow-lg shadow-[#8b7cf6]/25" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <span className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Sending...
+                        </span>
+                      ) : (
+                        "Send Reset Link"
+                      )}
+                    </Button>
+                  </form>
+                </CardContent>
+              </>
+            ) : view === "reset" ? (
+              <>
+                <CardHeader>
+                  <CardTitle className="text-2xl text-white">Set New Password</CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Enter your new password below
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleResetPassword} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="new-password" className="flex items-center gap-2 text-gray-300">
+                        <Lock className="h-4 w-4" />
+                        New Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="new-password"
+                          name="new-password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Minimum 6 characters"
+                          required
+                          className="h-11 pr-10 bg-[#1a1a1a] border-[#333] text-white placeholder:text-gray-500 focus:border-[#8b7cf6] rounded-lg"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                      {password && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-400">Password Strength</span>
+                            <span className={`font-semibold ${
+                              passwordStrength < 40 ? "text-red-400" : 
+                              passwordStrength < 70 ? "text-yellow-400" : 
+                              "text-green-400"
+                            }`}>
+                              {strengthText}
+                            </span>
+                          </div>
+                          <Progress value={passwordStrength} className="h-2 bg-[#333]">
+                            <div className={`h-full ${strengthColor} transition-all rounded-full`} />
+                          </Progress>
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirm-password" className="flex items-center gap-2 text-gray-300">
+                        <Lock className="h-4 w-4" />
+                        Confirm Password
+                      </Label>
+                      <Input
+                        id="confirm-password"
+                        name="confirm-password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Confirm your password"
+                        required
+                        className="h-11 bg-[#1a1a1a] border-[#333] text-white placeholder:text-gray-500 focus:border-[#8b7cf6] rounded-lg"
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      className="w-full h-11 bg-gradient-to-r from-[#8b7cf6] to-[#6366f1] hover:from-[#9d8ff8] hover:to-[#7577f3] text-white text-lg font-semibold rounded-lg transition-all shadow-lg shadow-[#8b7cf6]/25" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <span className="flex items-center gap-2">
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Updating...
+                        </span>
+                      ) : (
+                        "Update Password"
+                      )}
+                    </Button>
+                  </form>
+                </CardContent>
+              </>
+            ) : (
+              <>
+                <CardHeader>
+                  <CardTitle className="text-2xl text-white">Secure Access Made Simple</CardTitle>
+                  <CardDescription className="text-gray-400">Sign in to your account or create a new one</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6 bg-[#1a1a1a] border border-[#333] rounded-lg">
                   <TabsTrigger value="signin" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#8b7cf6] data-[state=active]:to-[#6366f1] data-[state=active]:text-white rounded-md text-gray-400">Sign In</TabsTrigger>
                   <TabsTrigger value="signup" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#8b7cf6] data-[state=active]:to-[#6366f1] data-[state=active]:text-white rounded-md text-gray-400">Sign Up</TabsTrigger>
@@ -323,9 +535,13 @@ const Auth = () => {
                         <input type="checkbox" className="rounded bg-[#1a1a1a] border-[#333]" />
                         <span className="text-gray-400">Remember me</span>
                       </label>
-                      <a href="#" className="text-[#8b7cf6] hover:underline">
+                      <button
+                        type="button"
+                        onClick={() => setView("forgot")}
+                        className="text-[#8b7cf6] hover:underline"
+                      >
                         Forgot password?
-                      </a>
+                      </button>
                     </div>
 
                     <Button 
@@ -464,9 +680,11 @@ const Auth = () => {
                       Sign in
                     </button>
                   </div>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </>
+          )}
           </Card>
         </div>
       </div>

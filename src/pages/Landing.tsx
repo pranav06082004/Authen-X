@@ -10,10 +10,11 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { FAQSection } from "@/components/FAQSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { TiltCard } from "@/components/TiltCard";
+import { useState } from "react";
 
 const Landing = () => {
   const scrollY = useParallax();
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -156,14 +157,25 @@ const Landing = () => {
               }
             ].map((feature, index) => (
               <AnimatedSection key={index} delay={index * 150} direction="up">
-                <TiltCard
-                  className="glass-card p-8 rounded-xl h-full"
-                  borderColor="rgb(239, 71, 111)"
-                  maxTilt={5}
+                <div
+                  className="glass-card p-8 rounded-xl transition-all duration-300 cursor-pointer h-full"
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  style={{
+                    transform: hoveredCard === index 
+                      ? 'translateY(-12px) rotateX(5deg) scale(1.03)' 
+                      : 'translateY(0) rotateX(0) scale(1)',
+                    boxShadow: hoveredCard === index 
+                      ? '0 20px 40px rgba(34, 211, 238, 0.3)' 
+                      : '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    transformStyle: 'preserve-3d',
+                  }}
                 >
                   <div 
-                    className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6`}
-                    style={{ transform: "translateZ(30px)" }}
+                    className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6 transition-transform duration-300`}
+                    style={{
+                      transform: hoveredCard === index ? 'translateZ(20px) rotateY(10deg)' : 'translateZ(0)',
+                    }}
                   >
                     <feature.icon className="h-7 w-7 text-white" />
                   </div>
@@ -171,7 +183,7 @@ const Landing = () => {
                   <p className="text-muted-foreground">
                     {feature.description}
                   </p>
-                </TiltCard>
+                </div>
               </AnimatedSection>
             ))}
           </div>
@@ -215,11 +227,7 @@ const Landing = () => {
       <section className="py-20 px-6">
         <div className="container mx-auto">
           <AnimatedSection direction="up">
-            <TiltCard 
-              className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto"
-              borderColor="rgb(239, 71, 111)"
-              maxTilt={3}
-            >
+            <div className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto">
               <h2 className="text-4xl font-bold mb-6">Ready to Verify Truth?</h2>
               <p className="text-xl text-muted-foreground mb-8">
                 Join thousands using AuthenX to combat misinformation
@@ -229,7 +237,7 @@ const Landing = () => {
                   Get Started for Free
                 </Button>
               </Link>
-            </TiltCard>
+            </div>
           </AnimatedSection>
         </div>
       </section>

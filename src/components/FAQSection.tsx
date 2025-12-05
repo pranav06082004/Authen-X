@@ -5,7 +5,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { TiltCard } from "@/components/TiltCard";
 
 const faqs = [
   {
@@ -50,23 +49,18 @@ export const FAQSection = () => {
         <AnimatedSection delay={200}>
           <Accordion type="single" collapsible className="w-full space-y-4">
             {faqs.map((faq, index) => (
-              <TiltCard 
-                key={index} 
-                maxTilt={3}
-                className="glass-card rounded-xl overflow-hidden"
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="glass-card rounded-xl px-6 border-none"
               >
-                <AccordionItem
-                  value={`item-${index}`}
-                  className="px-6 border-none"
-                >
-                  <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
-                    {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-5">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              </TiltCard>
+                <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-5">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
             ))}
           </Accordion>
         </AnimatedSection>

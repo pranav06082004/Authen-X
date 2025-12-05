@@ -78,9 +78,9 @@ export function use3DTilt(maxTilt: number = 5): Use3DTiltReturn {
       ? `perspective(1000px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) translateZ(${tilt.translateZ}px)`
       : "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)",
     transformStyle: "preserve-3d",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
     boxShadow: isHovered
-      ? `${-tilt.shadowX}px ${-tilt.shadowY + 15}px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(34, 211, 238, 0.15)`
+      ? `${-tilt.shadowX}px ${-tilt.shadowY + 15}px 30px rgba(0, 0, 0, 0.25), 0 0 30px rgba(239, 71, 111, 0.4), 0 0 60px rgba(239, 71, 111, 0.2)`
       : "0 4px 6px rgba(0, 0, 0, 0.1)",
   };
 

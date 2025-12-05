@@ -169,7 +169,7 @@
   }
 
   .card-hover-effect:hover {
-    transform: rotate(1.2718deg) rotateX(-1.26564deg) scale(1.02);
+    transform: rotate(1.2718deg) scale(1.02);
     border-bottom-width: 8px;
     border-bottom-color: rgba(250, 250, 250, 0.333);
     border-left-width: 0px;

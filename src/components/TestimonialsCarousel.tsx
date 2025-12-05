@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TiltCard } from "@/components/TiltCard";
 
 interface Testimonial {
   id: number;
@@ -112,31 +113,34 @@ export const TestimonialsCarousel = () => {
           {/* Carousel */}
           <div className="flex items-center justify-center gap-4 md:gap-6 min-h-[320px]">
             {getVisibleTestimonials().map((testimonial) => (
-              <div
+              <TiltCard
                 key={`${testimonial.id}-${testimonial.position}`}
-                className={`glass-card rounded-2xl p-6 md:p-8 transition-all duration-500 ${
+                maxTilt={testimonial.position === 0 ? 5 : 3}
+                className={`glass-card rounded-2xl transition-all duration-500 ${
                   testimonial.position === 0
                     ? "scale-100 opacity-100 z-10 w-full md:w-[400px]"
                     : "scale-90 opacity-40 hidden md:block w-[300px]"
                 }`}
               >
-                <Quote className="w-8 h-8 text-primary/30 mb-4" />
-                <p className="text-foreground/90 mb-6 leading-relaxed">
-                  "{testimonial.review}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full bg-muted"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-semibold">{testimonial.name}</h4>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                <div className="p-6 md:p-8">
+                  <Quote className="w-8 h-8 text-primary/30 mb-4" />
+                  <p className="text-foreground/90 mb-6 leading-relaxed">
+                    "{testimonial.review}"
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full bg-muted"
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{testimonial.name}</h4>
+                      <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    </div>
+                    <StarRating rating={testimonial.rating} />
                   </div>
-                  <StarRating rating={testimonial.rating} />
                 </div>
-              </div>
+              </TiltCard>
             ))}
           </div>
 

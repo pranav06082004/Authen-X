@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { AnimatedSection } from "@/components/AnimatedSection";
+import { use3DTilt } from "@/hooks/use3DTilt";
 
 const faqs = [
   {
@@ -33,6 +34,46 @@ const faqs = [
   }
 ];
 
+interface FAQItemProps {
+  faq: { question: string; answer: string };
+  index: number;
+}
+
+const FAQItem = ({ faq, index }: FAQItemProps) => {
+  const { cardRef, containerStyle, cardStyle, tiltState, handlers } = use3DTilt({
+    maxTilt: 4,
+    scale: 1.01,
+  });
+
+  return (
+    <div style={containerStyle}>
+      <AccordionItem
+        ref={cardRef}
+        value={`item-${index}`}
+        className="glass-card rounded-xl px-6 border-none relative z-[6]"
+        style={{
+          ...cardStyle,
+          borderTop: tiltState.isHovered ? '2px solid rgb(251, 144, 20)' : '2px solid rgb(251, 144, 20)',
+          borderRight: tiltState.isHovered ? '2px solid rgb(251, 144, 28)' : 'none',
+          borderBottom: 'none',
+          borderLeft: 'none',
+          boxShadow: tiltState.isHovered
+            ? '0 20px 60px rgba(251, 144, 20, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(251, 144, 20, 0.4)'
+            : '0 4px 20px rgba(0, 0, 0, 0.15)',
+        }}
+        {...handlers}
+      >
+        <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
+          {faq.question}
+        </AccordionTrigger>
+        <AccordionContent className="text-muted-foreground pb-5">
+          {faq.answer}
+        </AccordionContent>
+      </AccordionItem>
+    </div>
+  );
+};
+
 export const FAQSection = () => {
   return (
     <section className="py-20 px-6">
@@ -49,18 +90,7 @@ export const FAQSection = () => {
         <AnimatedSection delay={200}>
           <Accordion type="single" collapsible className="w-full space-y-4">
             {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="glass-card rounded-xl px-6 border-none"
-              >
-                <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+              <FAQItem key={index} faq={faq} index={index} />
             ))}
           </Accordion>
         </AnimatedSection>

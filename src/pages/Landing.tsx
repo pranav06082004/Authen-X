@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Shield, Zap, BarChart3, Lock, ArrowRight, Twitter, Github, Linkedin, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Shield3DCanvas } from "@/components/Shield3DCanvas";
+import { Logo3D } from "@/components/Logo3D";
 import { useParallax } from "@/hooks/useParallax";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { StatsCounter } from "@/components/StatsCounter";
@@ -109,14 +109,14 @@ const Landing = () => {
             </Link>
           </div>
 
-          {/* 3D Shield */}
+          {/* 3D A-X Logo */}
           <div 
-            className="mt-16 max-w-4xl mx-auto"
+            className="mt-12 max-w-4xl mx-auto"
             style={{
               transform: `translateY(${scrollY * -0.1}px)`,
             }}
           >
-            <Shield3DCanvas />
+            <Logo3D />
           </div>
         </div>
       </section>

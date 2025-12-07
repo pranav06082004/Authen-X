@@ -50,19 +50,68 @@ const useCountUp = (end: number, duration: number = 2000, start: boolean = false
 const StatCard = ({ stat, isVisible }: { stat: StatItem; isVisible: boolean }) => {
   const count = useCountUp(stat.value, 2500, isVisible);
   const Icon = stat.icon;
+  const [isHovered, setIsHovered] = useState(false);
+  const [tilt, setTilt] = useState({ x: -2.34578, y: 4.10711 });
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+    
+    const rotateY = (mouseX / (rect.width / 2)) * 5;
+    const rotateX = -(mouseY / (rect.height / 2)) * 3;
+    
+    setTilt({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setTilt({ x: -2.34578, y: 4.10711 });
+  };
 
   return (
-    <div className="text-center group">
-      <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-hero mb-4 group-hover:scale-110 transition-transform duration-300">
-        <Icon className="w-8 h-8 text-white" />
+    <div 
+      className="stat-card-3d-container"
+      style={{ perspective: '1500px' }}
+    >
+      <div 
+        ref={cardRef}
+        className="text-center group p-6 rounded-xl bg-background/50 backdrop-blur-sm"
+        style={{
+          transformStyle: 'preserve-3d',
+          position: 'relative',
+          zIndex: 0,
+          transform: isHovered 
+            ? `rotateY(${tilt.y}deg) rotateX(${tilt.x}deg) translateZ(20px)` 
+            : `rotateY(${tilt.y}deg) rotateX(${tilt.x}deg)`,
+          borderTop: 'none',
+          borderBottom: 'none',
+          borderLeft: 'none',
+          borderRight: isHovered ? '3px solid rgb(16, 159, 231)' : '2px solid rgb(16, 159, 231)',
+          transition: 'transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease',
+          boxShadow: isHovered 
+            ? '0 20px 40px rgba(16, 159, 231, 0.3), 0 0 20px rgba(16, 159, 231, 0.2)' 
+            : '0 4px 20px rgba(16, 159, 231, 0.1)',
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-hero mb-4 group-hover:scale-110 transition-transform duration-300">
+          <Icon className="w-8 h-8 text-white" />
+        </div>
+        <div className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-hero bg-clip-text text-transparent">
+          {stat.value >= 1000 
+            ? `${(count / 1000).toFixed(count >= 1000 ? 0 : 1)}k`
+            : count}
+          {stat.suffix}
+        </div>
+        <div className="text-muted-foreground font-medium">{stat.label}</div>
       </div>
-      <div className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-hero bg-clip-text text-transparent">
-        {stat.value >= 1000 
-          ? `${(count / 1000).toFixed(count >= 1000 ? 0 : 1)}k`
-          : count}
-        {stat.suffix}
-      </div>
-      <div className="text-muted-foreground font-medium">{stat.label}</div>
     </div>
   );
 };

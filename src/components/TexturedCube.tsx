@@ -293,7 +293,7 @@ export function TexturedCube({ mousePosition }: TexturedCubeProps) {
     };
   }, []);
 
-  // Define tile layout for a 3x3x3 Rubik's cube style
+  // Define tile layout for a complete 3x3x3 Rubik's cube - all 6 faces
   const tiles = useMemo(() => {
     const tileData: { pos: [number, number, number]; mat: THREE.Material }[] = [];
     const offset = 1;
@@ -315,6 +315,18 @@ export function TexturedCube({ mousePosition }: TexturedCubeProps) {
       }
     }
     
+    // Back face (z = -1.5)
+    idx = 2;
+    for (let y = 1; y >= -1; y--) {
+      for (let x = 1; x >= -1; x--) {
+        tileData.push({
+          pos: [x * offset, y * offset, -1.5],
+          mat: matArray[idx % matArray.length],
+        });
+        idx++;
+      }
+    }
+    
     // Right face (x = 1.5)
     idx = 3;
     for (let y = 1; y >= -1; y--) {
@@ -327,12 +339,36 @@ export function TexturedCube({ mousePosition }: TexturedCubeProps) {
       }
     }
     
+    // Left face (x = -1.5)
+    idx = 5;
+    for (let y = 1; y >= -1; y--) {
+      for (let z = -1; z <= 1; z++) {
+        tileData.push({
+          pos: [-1.5, y * offset, z * offset],
+          mat: matArray[idx % matArray.length],
+        });
+        idx++;
+      }
+    }
+    
     // Top face (y = 1.5)
     idx = 6;
     for (let z = -1; z <= 1; z++) {
       for (let x = -1; x <= 1; x++) {
         tileData.push({
           pos: [x * offset, 1.5, z * offset],
+          mat: matArray[idx % matArray.length],
+        });
+        idx++;
+      }
+    }
+    
+    // Bottom face (y = -1.5)
+    idx = 1;
+    for (let z = 1; z >= -1; z--) {
+      for (let x = -1; x <= 1; x++) {
+        tileData.push({
+          pos: [x * offset, -1.5, z * offset],
           mat: matArray[idx % matArray.length],
         });
         idx++;

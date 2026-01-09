@@ -9,7 +9,6 @@ export function FloatingGeometryCanvas() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    // Normalize mouse position to -1 to 1
     const x = (e.clientX / window.innerWidth) * 2 - 1;
     const y = -(e.clientY / window.innerHeight) * 2 + 1;
     setMousePosition({ x, y });
@@ -30,18 +29,14 @@ export function FloatingGeometryCanvas() {
     };
   }, [handleMouseMove]);
 
-  // Hide on mobile for performance
-  if (isMobile) return null;
-
-  // Scale factor for tablet
-  const scale = isTablet ? 0.7 : 1;
+  // Scale factor based on device
+  const scale = isMobile ? 0.6 : isTablet ? 0.8 : 1;
+  const height = isMobile ? "350px" : isTablet ? "450px" : "500px";
 
   return (
     <div 
-      className="absolute right-0 top-0 w-[65%] h-full pointer-events-none"
-      style={{
-        transform: `translateX(25%)`,
-      }}
+      className="w-full mx-auto"
+      style={{ height }}
     >
       <Canvas
         shadows

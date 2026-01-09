@@ -48,13 +48,7 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden min-h-screen">
-        {/* 3D Floating Geometry - Right side */}
-        <FloatingGeometryCanvas />
-        
-        {/* Subtle dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-transparent pointer-events-none z-[1]" />
-        
+      <section className="pt-32 pb-10 px-6 relative overflow-hidden">
         {/* Parallax background elements */}
         <div 
           className="absolute inset-0 opacity-5 pointer-events-none"
@@ -99,7 +93,7 @@ const Landing = () => {
           </p>
 
           <div 
-            className="flex gap-4 justify-center"
+            className="flex gap-4 justify-center mb-8"
             style={{
               transform: `translateY(${scrollY * 0.25}px)`,
             }}
@@ -114,6 +108,16 @@ const Landing = () => {
                 Learn More
               </Button>
             </Link>
+          </div>
+
+          {/* 3D Cube - Centered below buttons */}
+          <div 
+            className="max-w-3xl mx-auto"
+            style={{
+              transform: `translateY(${scrollY * -0.1}px)`,
+            }}
+          >
+            <FloatingGeometryCanvas />
           </div>
         </div>
       </section>

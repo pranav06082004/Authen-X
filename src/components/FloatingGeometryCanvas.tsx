@@ -9,9 +9,10 @@ export function FloatingGeometryCanvas() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
+    // Normalize mouse position to -1 to 1 with enhanced sensitivity
     const x = (e.clientX / window.innerWidth) * 2 - 1;
     const y = -(e.clientY / window.innerHeight) * 2 + 1;
-    setMousePosition({ x, y });
+    setMousePosition({ x: x * 1.5, y: y * 1.5 });
   }, []);
 
   useEffect(() => {

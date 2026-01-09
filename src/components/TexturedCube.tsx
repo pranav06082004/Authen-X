@@ -347,31 +347,39 @@ export function TexturedCube({ mousePosition }: TexturedCubeProps) {
     
     const time = state.clock.getElapsedTime();
     
-    // Slow continuous rotation (25 second full rotation on Y)
-    const baseRotationY = time * ((Math.PI * 2) / 25);
+    // Continuous auto-rotation on multiple axes for realistic cube feel
+    const baseRotationX = time * 0.15; // Slow X rotation
+    const baseRotationY = time * 0.25; // Slightly faster Y rotation
+    const baseRotationZ = Math.sin(time * 0.1) * 0.1; // Subtle Z wobble
     
-    // Mouse influence
-    targetRotation.current.x = mousePosition.y * 0.12;
-    targetRotation.current.y = mousePosition.x * 0.12;
+    // Enhanced mouse influence - more dramatic response
+    targetRotation.current.x = mousePosition.y * 0.4;
+    targetRotation.current.y = mousePosition.x * 0.5;
     
-    // Smooth interpolation
+    // Smooth interpolation with faster response
     cubeRef.current.rotation.x = THREE.MathUtils.lerp(
       cubeRef.current.rotation.x,
-      0.5 + targetRotation.current.x,
-      0.04
+      baseRotationX + targetRotation.current.x,
+      0.08
     );
     cubeRef.current.rotation.y = THREE.MathUtils.lerp(
       cubeRef.current.rotation.y,
       baseRotationY + targetRotation.current.y,
-      0.04
+      0.08
+    );
+    cubeRef.current.rotation.z = THREE.MathUtils.lerp(
+      cubeRef.current.rotation.z,
+      baseRotationZ,
+      0.05
     );
     
-    // Floating motion
-    cubeRef.current.position.y = Math.sin(time * 0.6) * 0.12;
+    // Enhanced floating motion - more pronounced
+    cubeRef.current.position.y = Math.sin(time * 0.8) * 0.18;
+    cubeRef.current.position.x = Math.sin(time * 0.5) * 0.05;
   });
 
   return (
-    <group ref={cubeRef} rotation={[0.5, 0.8, 0]}>
+    <group ref={cubeRef}>
       {/* Individual tiles */}
       {tiles.map((tile, index) => (
         <Tile key={index} position={tile.pos} material={tile.mat} />

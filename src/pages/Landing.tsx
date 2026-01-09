@@ -11,6 +11,7 @@ import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { FAQSection } from "@/components/FAQSection";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TiltCard } from "@/components/TiltCard";
+import BrandSection from "@/components/BrandSection";
 
 const Landing = () => {
   const scrollY = useParallax();
@@ -233,6 +234,9 @@ const Landing = () => {
           </AnimatedSection>
         </div>
       </section>
+
+      {/* Brand Section */}
+      <BrandSection />
 
       {/* Footer */}
       <footer className="py-16 px-6 border-t border-border/50 bg-card/20">

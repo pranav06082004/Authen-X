@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -37,8 +37,8 @@ const Contact = () => {
       <nav className="glass-card border-b border-border/50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
+            <Link to="/" className="text-xl font-bold text-primary">
+              AuthenX
             </Link>
             <div className="flex items-center gap-6">
               <Link to="/" className="text-foreground hover:text-primary transition-colors">

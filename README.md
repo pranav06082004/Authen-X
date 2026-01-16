@@ -2,15 +2,11 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/cf6716d6-81b4-43f0-a087-e79bc32f2a89
+**URL**: (https://authenx.vercel.app/)
 
 ## How can I edit this code?
 
 There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/cf6716d6-81b4-43f0-a087-e79bc32f2a89) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 
@@ -59,12 +55,6 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/cf6716d6-81b4-43f0-a087-e79bc32f2a89) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!
 

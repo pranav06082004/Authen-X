@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Brain, Target, Zap } from "lucide-react";
+import { Brain, Target, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const About = () => {
@@ -11,8 +11,8 @@ const About = () => {
       <nav className="glass-card border-b border-border/50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary cursor-pointer" onClick={() => navigate("/")} />
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+              <span className="text-xl font-bold text-primary">AuthenX</span>
             </div>
             <div className="flex items-center gap-6">
               <div className="cursor-pointer text-foreground hover:text-primary transition-colors" onClick={() => navigate("/")}>

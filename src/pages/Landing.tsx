@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Zap, BarChart3, Lock, ArrowRight, Twitter, Github, Linkedin, Mail } from "lucide-react";
+import { Zap, BarChart3, Lock, ArrowRight, Twitter, Github, Linkedin, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useParallax } from "@/hooks/useParallax";
 import { ParticleBackground } from "@/components/ParticleBackground";
@@ -25,8 +25,8 @@ const Landing = () => {
       <nav className="fixed top-0 w-full z-50 glass-card border-b border-border/50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
+            <Link to="/" className="text-xl font-bold text-primary">
+              AuthenX
             </Link>
             <div className="flex items-center gap-6">
               <Link to="/" className="text-primary font-medium">
@@ -245,8 +245,7 @@ const Landing = () => {
             {/* Brand */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <Shield className="h-7 w-7 text-primary" />
-                <span className="font-bold text-xl">AuthenX</span>
+                <span className="font-bold text-xl text-primary">AuthenX</span>
               </div>
               <p className="text-sm text-muted-foreground mb-6">
                 AI-Powered Authenticity Detection Platform. Fighting misinformation with cutting-edge technology.

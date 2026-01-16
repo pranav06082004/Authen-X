@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, LogOut, History, User, Layout, Image, FileText } from "lucide-react";
+import { LogOut, History, User, Layout, Image, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
@@ -69,8 +69,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold glow-text">AuthenX</span>
+              <span className="text-2xl font-bold glow-text text-primary">AuthenX</span>
             </div>
             <div className="flex items-center gap-4">
               <Button variant="ghost" onClick={() => navigate("/history")}>

@@ -8,7 +8,7 @@ import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { FAQSection } from "@/components/FAQSection";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import { TiltCard } from "@/components/TiltCard";
 import BrandSection from "@/components/BrandSection";
 import { FloatingGeometryCanvas } from "@/components/FloatingGeometryCanvas";
@@ -38,7 +38,7 @@ const Landing = () => {
               <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
                 Contact
               </Link>
-              <ThemeToggle />
+              
               <Link to="/auth">
                 <Button className="bg-gradient-hero">Sign In</Button>
               </Link>

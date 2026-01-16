@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, ArrowLeft, Users, Trash2 } from "lucide-react";
+import { ArrowLeft, Users, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -55,8 +55,7 @@ const Admin = () => {
               Back
             </Button>
             <div className="flex items-center gap-2">
-              <Shield className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold glow-text">TruthGuard</span>
+              <span className="text-2xl font-bold glow-text text-primary">AuthenX</span>
             </div>
           </div>
         </div>

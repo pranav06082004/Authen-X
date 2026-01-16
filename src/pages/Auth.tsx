@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Eye, EyeOff, CheckCircle2, XCircle, Lock, Mail, User, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, XCircle, Lock, Mail, User, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -260,9 +260,7 @@ const Auth = () => {
         
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-[#8b7cf6] to-[#6366f1] flex items-center justify-center shadow-lg shadow-[#8b7cf6]/30">
-              <Shield className="h-10 w-10 text-white" />
-            </div>
+            <span className="text-5xl font-bold text-white">AuthenX</span>
           </div>
           <h1 className="text-5xl font-bold text-white mb-4">AuthenX</h1>
           <p className="text-xl text-gray-400 text-center max-w-md mb-8">
@@ -296,7 +294,7 @@ const Auth = () => {
             
             <div className="flex items-start gap-4 bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-xl">
               <div className="w-10 h-10 rounded-lg bg-[#8b7cf6]/20 flex items-center justify-center flex-shrink-0">
-                <Shield className="h-5 w-5 text-[#8b7cf6]" />
+                <CheckCircle2 className="h-5 w-5 text-[#8b7cf6]" />
               </div>
               <div>
                 <h3 className="font-semibold mb-1 text-white">Trusted by Thousands</h3>
@@ -315,8 +313,7 @@ const Auth = () => {
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Shield className="h-10 w-10 text-[#8b7cf6]" />
-              <span className="text-3xl font-bold text-white">AuthenX</span>
+              <span className="text-3xl font-bold text-[#8b7cf6]">AuthenX</span>
             </div>
             <p className="text-gray-400">AI-Powered Authenticity Detection</p>
           </div>

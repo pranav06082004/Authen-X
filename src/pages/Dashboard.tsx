@@ -6,16 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LogOut, History, User, Layout, Image, FileText } from "lucide-react";
+import { Image, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import AnalysisResult from "@/components/AnalysisResult";
 import { MediaUpload } from "@/components/MediaUpload";
 import { AnalysisCharts } from "@/components/AnalysisCharts";
+import { Navbar } from "@/components/Navbar";
 
 const Dashboard = () => {
-  const { user, userRole } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [inputText, setInputText] = useState("");
   const [inputUrl, setInputUrl] = useState("");
@@ -27,12 +28,6 @@ const Dashboard = () => {
     navigate("/auth");
     return null;
   }
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast.success("Signed out successfully");
-    navigate("/");
-  };
 
   const handleAnalyze = async (type: 'text' | 'url') => {
     setIsAnalyzing(true);
@@ -65,35 +60,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="glass-card border-b border-border/50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold glow-text text-primary">AuthenX</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => navigate("/history")}>
-                <History className="mr-2 h-4 w-4" />
-                History
-              </Button>
-              {userRole === 'admin' && (
-                <Button variant="ghost" onClick={() => navigate("/admin")}>
-                  <Layout className="mr-2 h-4 w-4" />
-                  Admin
-                </Button>
-              )}
-              <Button variant="ghost" onClick={() => navigate("/profile")}>
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </Button>
-              <Button variant="outline" onClick={handleSignOut}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar variant="authenticated" />
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-12">

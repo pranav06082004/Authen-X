@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle2, XCircle, HelpCircle } from "lucide-react";
+import { CheckCircle2, XCircle, HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { Navbar } from "@/components/Navbar";
 
 const History = () => {
   const { user } = useAuth();
@@ -53,19 +53,7 @@ const History = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="glass-card border-b border-border/50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate("/dashboard")}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold glow-text text-primary">AuthenX</span>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar variant="back" />
 
       {/* Content */}
       <div className="container mx-auto px-6 py-12">

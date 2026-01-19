@@ -4,64 +4,64 @@
 @tailwind components;
 @tailwind utilities;
 
-/* TruthGuard Design System - Bold, trustworthy tech aesthetic */
+/* AuthenX Design System - Cyan & Magenta vibrant tech aesthetic */
 
 @layer base {
   :root {
-    /* Core Colors - Pure black Resend-style palette */
-    --background: 0 0% 2%;
-    --foreground: 0 0% 98%;
+    /* Core Colors - Deep dark with ice white text */
+    --background: 220 20% 4%;
+    --foreground: 180 20% 97%;
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
+    --card: 220 15% 8%;
+    --card-foreground: 180 20% 97%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 220 15% 8%;
+    --popover-foreground: 180 20% 97%;
 
-    /* Primary - Deep blue for trust */
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 221 83% 65%;
+    /* Primary - Vibrant Cyan */
+    --primary: 180 85% 50%;
+    --primary-foreground: 220 20% 4%;
+    --primary-glow: 180 85% 60%;
 
-    /* Secondary - Cyan tech accent */
-    --secondary: 188 94% 43%;
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary - Electric Magenta */
+    --secondary: 300 80% 60%;
+    --secondary-foreground: 220 20% 4%;
 
     /* Warning - Amber/Orange for fake news */
     --warning: 24 95% 53%;
-    --warning-foreground: 222 47% 11%;
+    --warning-foreground: 220 20% 4%;
     
     /* Success - Emerald for verified */
-    --success: 142 76% 36%;
-    --success-foreground: 210 40% 98%;
+    --success: 160 84% 45%;
+    --success-foreground: 220 20% 4%;
     
-    /* Uncertain - Gray for unclear results */
-    --uncertain: 215 20% 65%;
-    --uncertain-foreground: 222 47% 11%;
+    /* Uncertain - Cool gray for unclear results */
+    --uncertain: 200 15% 55%;
+    --uncertain-foreground: 220 20% 4%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 220 15% 12%;
+    --muted-foreground: 200 10% 60%;
 
-    --accent: 188 94% 43%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 300 80% 60%;
+    --accent-foreground: 220 20% 4%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 180 20% 97%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 221 83% 53%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 180 85% 50%;
 
     --radius: 0.75rem;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%), hsl(188 94% 43%));
+    /* Gradients - Cyan to Magenta */
+    --gradient-hero: linear-gradient(135deg, hsl(180 85% 50%), hsl(300 80% 60%));
     --gradient-warning: linear-gradient(135deg, hsl(24 95% 53%), hsl(0 84% 60%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(158 76% 40%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 6% / 0.8), hsl(0 0% 10% / 0.6));
+    --gradient-success: linear-gradient(135deg, hsl(160 84% 45%), hsl(180 85% 50%));
+    --gradient-card: linear-gradient(135deg, hsl(220 15% 8% / 0.9), hsl(220 20% 12% / 0.7));
 
-    /* Shadows & Effects */
-    --shadow-glow: 0 0 40px hsl(221 83% 53% / 0.3);
+    /* Shadows & Effects - Cyan/Magenta glow */
+    --shadow-glow: 0 0 40px hsl(180 85% 50% / 0.3);
     --shadow-card: 0 10px 30px -10px hsl(0 0% 0% / 0.8);
     
     /* Animations */
@@ -69,48 +69,48 @@
   }
 
   .light {
-    /* Light mode colors */
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    /* Light mode colors - Cyan & Magenta theme */
+    --background: 180 15% 97%;
+    --foreground: 220 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 220 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 220 25% 12%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 221 83% 65%;
+    --primary: 180 85% 40%;
+    --primary-foreground: 180 20% 97%;
+    --primary-glow: 180 85% 50%;
 
-    --secondary: 188 94% 43%;
+    --secondary: 300 70% 50%;
     --secondary-foreground: 0 0% 100%;
 
     --warning: 24 95% 53%;
     --warning-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
 
-    --uncertain: 215 20% 45%;
+    --uncertain: 200 15% 45%;
     --uncertain-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 20% 45%;
+    --muted: 180 10% 94%;
+    --muted-foreground: 200 15% 40%;
 
-    --accent: 188 94% 43%;
+    --accent: 300 70% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 85%;
-    --input: 214 32% 85%;
-    --ring: 221 83% 53%;
+    --border: 180 20% 85%;
+    --input: 180 20% 85%;
+    --ring: 180 85% 40%;
 
-    /* Light mode shadows */
-    --shadow-glow: 0 0 40px hsl(221 83% 53% / 0.2);
-    --shadow-card: 0 10px 30px -10px hsl(222 47% 50% / 0.15);
+    /* Light mode shadows - Cyan glow */
+    --shadow-glow: 0 0 40px hsl(180 85% 50% / 0.2);
+    --shadow-card: 0 10px 30px -10px hsl(220 25% 50% / 0.15);
   }
 
   .dark {
@@ -142,7 +142,7 @@
   }
 
   .glow-text {
-    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+    text-shadow: 0 0 20px hsl(180 85% 50% / 0.5), 0 0 40px hsl(300 80% 60% / 0.3);
   }
 
   .animate-glow {
@@ -151,10 +151,10 @@
 
   @keyframes glow {
     from {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+      box-shadow: 0 0 20px hsl(180 85% 50% / 0.3), 0 0 30px hsl(300 80% 60% / 0.2);
     }
     to {
-      box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+      box-shadow: 0 0 40px hsl(180 85% 50% / 0.5), 0 0 60px hsl(300 80% 60% / 0.4);
     }
   }
 
@@ -164,12 +164,12 @@
     perspective-origin: center;
   }
 
-  /* 3D Tilt Card - CodeHelp inspired */
+  /* 3D Tilt Card - Cyan & Magenta themed */
   .tilt-card-3d {
     transform-style: preserve-3d;
     position: relative;
     z-index: 6;
-    border-top: 2px solid rgb(239, 71, 111);
+    border-top: 2px solid hsl(180 85% 50%);
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -183,7 +183,7 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(239, 71, 111, 0.1), rgba(106, 90, 205, 0.1));
+    background: linear-gradient(135deg, hsl(180 85% 50% / 0.1), hsl(300 80% 60% / 0.1));
     opacity: 0;
     transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     pointer-events: none;
@@ -193,12 +193,12 @@
     opacity: 1;
   }
 
-  /* Animated card hover effect - updated */
+  /* Animated card hover effect - Cyan & Magenta */
   .card-hover-effect {
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     transform-origin: center center;
     transform-style: preserve-3d;
-    border-top: 2px solid rgb(239, 71, 111);
+    border-top: 2px solid hsl(180 85% 50%);
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -208,18 +208,18 @@
 
   .card-hover-effect:hover {
     transform: rotateY(3.85deg) rotateX(-2.43deg) translateZ(20px) scale(1.02);
-    border-top: 3px solid rgb(239, 71, 111);
+    border-top: 3px solid hsl(180 85% 50%);
     box-shadow: 
-      0 20px 60px rgba(239, 71, 111, 0.3),
-      0 10px 30px rgba(0, 0, 0, 0.5),
-      0 -4px 20px rgba(239, 71, 111, 0.6);
+      0 20px 60px hsl(180 85% 50% / 0.3),
+      0 10px 30px hsl(0 0% 0% / 0.5),
+      0 -4px 20px hsl(300 80% 60% / 0.4);
   }
 
   /* Feature card specific styling */
   .feature-card-3d {
     transform-style: preserve-3d;
     position: relative;
-    border-top: 2px solid rgb(239, 71, 111);
+    border-top: 2px solid hsl(180 85% 50%);
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -231,7 +231,7 @@
     border-top-width: 3px;
   }
 
-  /* Glow effect for top border */
+  /* Glow effect for top border - Cyan & Magenta */
   .glow-border-top {
     position: relative;
   }
@@ -243,13 +243,13 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: rgb(239, 71, 111);
-    box-shadow: 0 0 10px rgba(239, 71, 111, 0.3);
+    background: linear-gradient(90deg, hsl(180 85% 50%), hsl(300 80% 60%));
+    box-shadow: 0 0 10px hsl(180 85% 50% / 0.3);
     transition: box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
   .glow-border-top:hover::after {
-    box-shadow: 0 0 20px rgba(239, 71, 111, 0.6), 0 0 40px rgba(239, 71, 111, 0.4);
+    box-shadow: 0 0 20px hsl(180 85% 50% / 0.6), 0 0 40px hsl(300 80% 60% / 0.4);
   }
 
   /* Reduced motion support */

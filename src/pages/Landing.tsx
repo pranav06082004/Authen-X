@@ -12,6 +12,7 @@ import { FAQSection } from "@/components/FAQSection";
 import { TiltCard } from "@/components/TiltCard";
 import BrandSection from "@/components/BrandSection";
 import { FloatingGeometryCanvas } from "@/components/FloatingGeometryCanvas";
+import { Navbar } from "@/components/Navbar";
 
 const Landing = () => {
   const scrollY = useParallax();
@@ -22,30 +23,7 @@ const Landing = () => {
       <ParticleBackground />
       
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 glass-card border-b border-border/50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="text-xl font-bold text-primary">
-              AuthenX
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link to="/" className="text-primary font-medium">
-                Home
-              </Link>
-              <Link to="/about" className="text-foreground hover:text-primary transition-colors">
-                About
-              </Link>
-              <Link to="/contact" className="text-foreground hover:text-primary transition-colors">
-                Contact
-              </Link>
-              
-              <Link to="/auth">
-                <Button className="bg-gradient-hero">Sign In</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar variant="public" currentPage="home" />
 
       {/* Hero Section */}
       <section className="pt-32 pb-10 px-6 relative overflow-hidden">

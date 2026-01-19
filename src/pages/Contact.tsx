@@ -5,6 +5,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Navbar } from "@/components/Navbar";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -34,29 +35,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="glass-card border-b border-border/50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="text-xl font-bold text-primary">
-              AuthenX
-            </Link>
-            <div className="flex items-center gap-6">
-              <Link to="/" className="text-foreground hover:text-primary transition-colors">
-                Home
-              </Link>
-              <Link to="/about" className="text-foreground hover:text-primary transition-colors">
-                About
-              </Link>
-              <Link to="/contact" className="text-primary font-medium">
-                Contact
-              </Link>
-              <Link to="/auth">
-                <Button className="bg-gradient-hero">Sign In</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar variant="public" currentPage="contact" />
 
       {/* Contact Section */}
       <div className="container mx-auto px-6 py-12">

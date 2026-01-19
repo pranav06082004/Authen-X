@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Brain, Target, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Navbar } from "@/components/Navbar";
 
 const About = () => {
   const navigate = useNavigate();
@@ -8,29 +9,7 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="glass-card border-b border-border/50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-              <span className="text-xl font-bold text-primary">AuthenX</span>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="cursor-pointer text-foreground hover:text-primary transition-colors" onClick={() => navigate("/")}>
-                Home
-              </div>
-              <div className="text-primary font-medium">
-                About
-              </div>
-              <div className="cursor-pointer text-foreground hover:text-primary transition-colors" onClick={() => navigate("/contact")}>
-                Contact
-              </div>
-              <Button onClick={() => navigate("/auth")} className="bg-gradient-hero">
-                Sign In
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar variant="public" currentPage="about" />
 
       {/* Content */}
       <div className="container mx-auto px-6 py-12">

@@ -1,52 +1,74 @@
-## Project info
+# Authen-X
 
-**URL**: (https://authenx.vercel.app/)
+An AI-powered misinformation detection platform that helps users verify the authenticity of online content using Machine Learning and Natural Language Processing techniques. Authen-X analyzes news articles, claims, and textual content to identify potential misinformation and provide reliability insights.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+* AI-driven fake news and misinformation detection
+* Real-time content analysis
+* User-friendly and responsive interface
+* Confidence score for predictions
+* Fast and scalable architecture
+* Secure authentication and user management
 
-Changes made via Lovable will be committed automatically to this repo.
+## Tech Stack
 
-**Use your preferred IDE**
+**Frontend:** React.js, Tailwind CSS
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Backend:** Node.js, Express.js
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**Database:** MongoDB
 
-Follow these steps:
+**AI/ML:** Python, Scikit-learn, NLP
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## How It Works
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. User submits a news article or claim.
+2. The content is preprocessed using NLP techniques.
+3. The trained machine learning model evaluates the text.
+4. Authen-X returns a prediction along with a confidence score and authenticity insights.
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Live Demo
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+🔗 **Live Application:** (https://authenx.vercel.app/)
+
+## Installation
+
+```bash
+git clone https://github.com/pranav06082004/Authen-X.git
+cd Authen-X
+npm install
+```
+
+### Run Frontend
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Run Backend
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+npm start
+```
 
-**Use GitHub Codespaces**
+## Future Enhancements
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+* Multi-language misinformation detection
+* Social media post verification
+* Explainable AI predictions
+* Browser extension integration
+* Advanced fact-checking APIs
 
-## What technologies are used for this project?
+## Author
 
-This project is built with:
+**Pranav Harnaiya**
+
+Computer Science & Engineering (Data Science)
+
+## License
+
+This project is licensed under the MIT License.
 
 - Vite
 - TypeScript

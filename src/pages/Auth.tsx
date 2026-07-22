@@ -199,6 +199,14 @@ const Auth = () => {
       }
     }
 
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      setIsLoading(false);
+      toast.error("Your reset link has expired. Please request a new one.");
+      setView("forgot");
+      return;
+    }
+
     const { error } = await supabase.auth.updateUser({ password: newPassword });
 
     setIsLoading(false);

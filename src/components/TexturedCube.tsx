@@ -188,7 +188,7 @@ function createAXTexture(): THREE.CanvasTexture {
   ctx.textBaseline = "middle";
   
   // Glow effect
-  ctx.shadowColor = "#3b6fa0";
+  ctx.shadowColor = "#10b981";
   ctx.shadowBlur = 30;
   ctx.fillStyle = "#ffffff";
   ctx.fillText("A-X", 256, 256);

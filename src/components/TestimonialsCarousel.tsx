@@ -95,13 +95,14 @@ const TestimonialCard = ({ testimonial, isCenter }: TestimonialCardProps) => {
         style={{
           ...(isCenter ? cardStyle : {}),
           transformStyle: 'preserve-3d',
-          borderTop: '2px solid rgb(59, 111, 160)',
-          borderRight: tiltState.isHovered && isCenter ? '2px solid rgb(91, 155, 213)' : 'none',
+          borderTop: '2px solid rgb(16, 185, 129)',
+          borderRight: tiltState.isHovered && isCenter ? '2px solid rgb(20, 184, 166)' : 'none',
           borderBottom: 'none',
           borderLeft: 'none',
           boxShadow: tiltState.isHovered && isCenter
-            ? '0 20px 60px rgba(59, 111, 160, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(91, 155, 213, 0.4)'
+            ? '0 20px 60px rgba(16, 185, 129, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(20, 184, 166, 0.4)'
             : '0 4px 20px rgba(0, 0, 0, 0.15)',
+
         }}
         {...(isCenter ? handlers : {})}
       >

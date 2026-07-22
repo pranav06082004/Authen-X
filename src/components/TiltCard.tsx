@@ -18,8 +18,9 @@ export const TiltCard: React.FC<TiltCardProps> = ({
   containerClassName,
   maxTilt = 5,
   scale = 1.02,
-  glowColor = 'rgba(59, 111, 160, 0.3)',
-  accentColor = 'rgb(59, 111, 160)',
+  glowColor = 'rgba(16, 185, 129, 0.3)',
+  accentColor = 'rgb(16, 185, 129)',
+
 }) => {
   const { cardRef, containerStyle, cardStyle, tiltState, handlers } = use3DTilt({
     maxTilt,
@@ -50,7 +51,7 @@ export const TiltCard: React.FC<TiltCardProps> = ({
         <div
           className="absolute inset-0 rounded-xl pointer-events-none transition-opacity duration-400"
           style={{
-            background: `linear-gradient(135deg, ${accentColor.replace('rgb', 'rgba').replace(')', ', 0.1)')}, rgba(106, 90, 205, 0.1))`,
+            background: `linear-gradient(135deg, ${accentColor.replace('rgb', 'rgba').replace(')', ', 0.1)')}, rgba(20, 184, 166, 0.1))`,
             opacity: tiltState.isHovered ? 1 : 0,
           }}
         />

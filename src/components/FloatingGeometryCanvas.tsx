@@ -70,19 +70,20 @@ export function FloatingGeometryCanvas() {
           color="#ffffff"
         />
         
-        {/* Subtle blue accent light */}
+        {/* Subtle emerald accent light */}
         <pointLight 
           position={[-3, 3, 3]} 
-          intensity={0.3}
-          color="#3b6fa0"
+          intensity={0.35}
+          color="#10b981"
         />
         
-        {/* Bottom fill light */}
+        {/* Bottom fill light - teal */}
         <pointLight 
           position={[0, -5, 2]} 
-          intensity={0.15}
-          color="#1e3a5f"
+          intensity={0.18}
+          color="#14b8a6"
         />
+
         
         {/* Spot light for dramatic effect */}
         <spotLight

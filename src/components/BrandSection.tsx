@@ -129,7 +129,7 @@ const BrandSection = () => {
               transform: 'translate(-50%, -50%)',
               width: '400px',
               height: '400px',
-              background: 'radial-gradient(circle, rgba(59, 111, 160, 0.15) 0%, rgba(59, 111, 160, 0.05) 30%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, rgba(20, 184, 166, 0.08) 30%, transparent 70%)',
               filter: 'blur(20px)',
               willChange: 'transform',
             }}

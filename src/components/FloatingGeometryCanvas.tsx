@@ -74,14 +74,14 @@ export function FloatingGeometryCanvas() {
         <pointLight 
           position={[-3, 3, 3]} 
           intensity={0.3}
-          color="#3b82f6"
+          color="#3b6fa0"
         />
         
         {/* Bottom fill light */}
         <pointLight 
           position={[0, -5, 2]} 
           intensity={0.15}
-          color="#1e40af"
+          color="#1e3a5f"
         />
         
         {/* Spot light for dramatic effect */}

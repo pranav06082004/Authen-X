@@ -45,7 +45,7 @@ const Landing = () => {
               transform: `translateY(${scrollY * 0.1}px)`,
             }}
           >
-            <span className="text-sm text-secondary font-medium">AI-Powered Truth Detection</span>
+            <span className="text-sm text-primary-glow font-medium">AI-Powered Truth Detection</span>
           </div>
           
           <h1 

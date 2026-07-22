@@ -53,12 +53,12 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
         className="glass-card rounded-xl px-6 border-none relative z-[6]"
         style={{
           ...cardStyle,
-          borderTop: tiltState.isHovered ? '2px solid rgb(251, 144, 20)' : '2px solid rgb(251, 144, 20)',
-          borderRight: tiltState.isHovered ? '2px solid rgb(251, 144, 28)' : 'none',
+          borderTop: tiltState.isHovered ? '2px solid rgb(59, 111, 160)' : '2px solid rgb(59, 111, 160)',
+          borderRight: tiltState.isHovered ? '2px solid rgb(91, 155, 213)' : 'none',
           borderBottom: 'none',
           borderLeft: 'none',
           boxShadow: tiltState.isHovered
-            ? '0 20px 60px rgba(251, 144, 20, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(251, 144, 20, 0.4)'
+            ? '0 20px 60px rgba(59, 111, 160, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(91, 155, 213, 0.4)'
             : '0 4px 20px rgba(0, 0, 0, 0.15)',
         }}
         {...handlers}

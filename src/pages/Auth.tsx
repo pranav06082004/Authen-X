@@ -25,12 +25,21 @@ const Auth = () => {
   const [view, setView] = useState<"auth" | "forgot" | "reset">("auth");
   const [resetEmail, setResetEmail] = useState("");
 
-  // Check if user came from password reset link
+  // Check if user came from password reset link (query param, hash, or auth event)
   useEffect(() => {
     const type = searchParams.get("type");
-    if (type === "recovery") {
+    const hash = typeof window !== "undefined" ? window.location.hash : "";
+    if (type === "recovery" || hash.includes("type=recovery")) {
       setView("reset");
     }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setView("reset");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [searchParams]);
 
   const getPasswordStrength = (pwd: string) => {

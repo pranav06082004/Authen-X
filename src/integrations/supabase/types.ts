@@ -91,9 +91,46 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      analyses_admin_summary: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          id: string | null
+          key_phrases: string[] | null
+          result: string | null
+          user_id: string | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string | null
+          key_phrases?: string[] | null
+          result?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          id?: string | null
+          key_phrases?: string[] | null
+          result?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      admin_list_analyses: {
+        Args: never
+        Returns: {
+          confidence: number
+          created_at: string
+          id: string
+          key_phrases: string[]
+          result: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

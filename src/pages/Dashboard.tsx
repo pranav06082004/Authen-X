@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import AnalysisResult from "@/components/AnalysisResult";
 import { MediaUpload } from "@/components/MediaUpload";
-import { AnalysisCharts } from "@/components/AnalysisCharts";
 import { Navbar } from "@/components/Navbar";
 
 const Dashboard = () => {

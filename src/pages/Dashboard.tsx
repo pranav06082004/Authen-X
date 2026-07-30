@@ -159,12 +159,8 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {result && (
-            <div className="space-y-6">
-              <AnalysisResult result={result} />
-              <AnalysisCharts />
-            </div>
-          )}
+          {result && <AnalysisResult result={result} />}
+
         </div>
       </div>
     </div>

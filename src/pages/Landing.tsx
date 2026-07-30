@@ -19,9 +19,6 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Particle Background */}
-      <ParticleBackground />
-      
       {/* Navigation */}
       <Navbar variant="public" currentPage="home" />
 

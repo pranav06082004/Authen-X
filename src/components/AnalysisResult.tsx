@@ -1,126 +1,131 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, HelpCircle, AlertTriangle, Shield, ExternalLink, Info } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  HelpCircle,
+  AlertTriangle,
+  Shield,
+  Info,
+  ListChecks,
+  BookOpen,
+  Quote,
+} from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
-interface AnalysisResultProps {
-  result: {
-    verdict: 'REAL' | 'FAKE' | 'UNCERTAIN';
-    confidence: number;
-    keyPhrases?: string[];
+export interface AnalysisResultData {
+  verdict: "REAL" | "FAKE" | "UNCERTAIN";
+  confidence: number;
+  summary?: string;
+  reasons?: { title: string; detail: string; impact?: "supports_real" | "supports_fake" | "unclear" }[];
+  claims?: { claim: string; status: "credible" | "suspicious" | "misleading" | "unverifiable"; note?: string }[];
+  evidence?: {
+    verifiedFacts?: string[];
+    assumptions?: string[];
+    limitations?: string;
   };
+  keyPhrases?: string[];
+  styleSignals?: string[];
+  finalVerdict?: string;
+  liveSourcesUsed?: boolean;
 }
 
-const AnalysisResult = ({ result }: AnalysisResultProps) => {
-  const getVerdictConfig = () => {
-    switch (result.verdict) {
-      case 'REAL':
-        return {
-          icon: CheckCircle2,
-          color: 'text-success',
-          bgGradient: 'bg-gradient-success',
-          label: 'Likely Authentic',
-          description: 'This content appears to be legitimate based on our analysis',
-        };
-      case 'FAKE':
-        return {
-          icon: XCircle,
-          color: 'text-warning',
-          bgGradient: 'bg-gradient-warning',
-          label: 'Potentially Misleading',
-          description: 'This content shows signs of misinformation or fabrication',
-        };
-      case 'UNCERTAIN':
-        return {
-          icon: HelpCircle,
-          color: 'text-uncertain',
-          bgGradient: 'bg-muted',
-          label: 'Requires Verification',
-          description: 'Unable to determine authenticity with high confidence',
-        };
-    }
-  };
+const verdictConfig = {
+  REAL: {
+    icon: CheckCircle2,
+    label: "Likely Real",
+    description: "The information looks credible and consistent with what we could check.",
+    tone: "text-success",
+    ring: "border-success/30",
+    chip: "bg-success/10 text-success border-success/30",
+  },
+  FAKE: {
+    icon: XCircle,
+    label: "Likely Fake",
+    description: "The content contains strong indicators of false or misleading claims.",
+    tone: "text-destructive",
+    ring: "border-destructive/30",
+    chip: "bg-destructive/10 text-destructive border-destructive/30",
+  },
+  UNCERTAIN: {
+    icon: HelpCircle,
+    label: "Uncertain — Needs Verification",
+    description: "There isn't enough reliable evidence to confidently classify this news.",
+    tone: "text-warning",
+    ring: "border-warning/30",
+    chip: "bg-warning/10 text-warning border-warning/30",
+  },
+} as const;
 
-  const config = getVerdictConfig();
+const claimStatusStyles: Record<string, string> = {
+  credible: "bg-success/10 text-success border-success/30",
+  suspicious: "bg-warning/10 text-warning border-warning/30",
+  misleading: "bg-destructive/10 text-destructive border-destructive/30",
+  unverifiable: "bg-muted text-muted-foreground border-border",
+};
+
+const claimStatusLabel: Record<string, string> = {
+  credible: "Looks credible",
+  suspicious: "Suspicious",
+  misleading: "Misleading",
+  unverifiable: "Can't be verified",
+};
+
+const AnalysisResult = ({ result }: { result: AnalysisResultData }) => {
+  const config = verdictConfig[result.verdict] ?? verdictConfig.UNCERTAIN;
   const Icon = config.icon;
 
-  // Mock data for Key Findings & Red Flags (in production, this would come from the AI analysis)
-  const redFlags = result.verdict === 'FAKE' ? [
-    { severity: 'high', text: 'Sensational language detected', explanation: 'Content uses emotionally charged words designed to provoke strong reactions' },
-    { severity: 'medium', text: 'Unverified claims present', explanation: 'Multiple factual claims lack credible source citations' },
-    { severity: 'medium', text: 'Suspicious domain reputation', explanation: 'Source has history of publishing misleading content' },
-  ] : result.verdict === 'UNCERTAIN' ? [
-    { severity: 'low', text: 'Limited source information', explanation: 'Unable to verify the credibility of the source' },
-  ] : [];
+  const confidenceLabel =
+    result.confidence >= 80 ? "High" : result.confidence >= 60 ? "Moderate" : result.confidence >= 40 ? "Low" : "Very low";
 
-  const supportingEvidence = result.verdict === 'REAL' ? [
-    { source: 'Reuters', trustScore: 95, quote: 'Confirmed by multiple independent sources' },
-    { source: 'Associated Press', trustScore: 93, quote: 'Facts verified through official channels' },
-    { source: 'BBC News', trustScore: 92, quote: 'Corroborated by expert analysis' },
-  ] : result.verdict === 'UNCERTAIN' ? [
-    { source: 'Fact-Check.org', trustScore: 85, quote: 'Some elements verified, others require further investigation' },
-  ] : [];
-
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'high': return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'medium': return 'bg-warning/10 text-warning border-warning/20';
-      case 'low': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      default: return 'bg-muted text-muted-foreground';
-    }
-  };
-
-  const getConfidenceColor = () => {
-    if (result.confidence >= 80) return 'text-success';
-    if (result.confidence >= 60) return 'text-warning';
-    return 'text-destructive';
-  };
+  const reasons = result.reasons ?? [];
+  const claims = result.claims ?? [];
+  const verifiedFacts = result.evidence?.verifiedFacts ?? [];
+  const assumptions = result.evidence?.assumptions ?? [];
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Main Verdict Card */}
-      <Card className="glass-card animate-glow border-2">
+      {/* Verdict */}
+      <Card className={`glass-card border-2 ${config.ring}`}>
         <CardHeader>
-          <CardTitle className="flex items-center gap-4">
-            <div className={`w-16 h-16 rounded-2xl ${config.bgGradient} flex items-center justify-center flex-shrink-0`}>
-              <Icon className="h-8 w-8 text-white" />
+          <CardTitle className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className={`w-14 h-14 rounded-2xl border-2 ${config.ring} flex items-center justify-center flex-shrink-0`}>
+              <Icon className={`h-7 w-7 ${config.tone}`} />
             </div>
             <div className="flex-1">
-              <div className="text-3xl font-bold mb-1">{config.label}</div>
-              <div className="text-sm text-muted-foreground font-normal">
-                {config.description}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className={`text-2xl font-bold ${config.tone}`}>{config.label}</span>
+                <Badge variant="outline" className={config.chip}>
+                  Detection Result
+                </Badge>
               </div>
+              <p className="text-sm text-muted-foreground font-normal mt-1">{config.description}</p>
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Confidence Score */}
-          <div className="space-y-3">
+        <CardContent className="space-y-5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <span className="flex items-center gap-2 font-semibold">
                 <Shield className="h-5 w-5 text-primary" />
-                <span className="font-semibold">Confidence Score</span>
-              </div>
-              <span className={`text-2xl font-bold ${getConfidenceColor()}`}>
-                {result.confidence.toFixed(0)}%
+                Confidence
               </span>
+              <span className={`text-2xl font-bold ${config.tone}`}>{Math.round(result.confidence)}%</span>
             </div>
             <Progress value={result.confidence} className="h-3" />
             <p className="text-xs text-muted-foreground">
-              Based on {Math.floor(Math.random() * 50 + 100)} data points analyzed
+              {confidenceLabel} confidence. This is an AI prediction, not proof — always double-check important news yourself.
             </p>
           </div>
 
-          {/* Key Phrases */}
+          {result.summary && <p className="text-sm leading-relaxed">{result.summary}</p>}
+
           {result.keyPhrases && result.keyPhrases.length > 0 && (
-            <div className="space-y-3">
-              <h4 className="text-sm font-semibold flex items-center gap-2">
-                <Info className="h-4 w-4" />
-                Key Phrases Detected
-              </h4>
+            <div className="space-y-2">
+              <h4 className="text-sm font-semibold">Phrases we focused on</h4>
               <div className="flex flex-wrap gap-2">
-                {result.keyPhrases.map((phrase, idx) => (
-                  <Badge key={idx} variant="secondary" className="glass-card">
+                {result.keyPhrases.map((phrase, i) => (
+                  <Badge key={i} variant="secondary" className="glass-card font-normal">
                     {phrase}
                   </Badge>
                 ))}
@@ -130,75 +135,64 @@ const AnalysisResult = ({ result }: AnalysisResultProps) => {
         </CardContent>
       </Card>
 
-      {/* Red Flags Section */}
-      {redFlags.length > 0 && (
-        <Card className="glass-card border-2 border-warning/20">
+      {/* Why */}
+      {reasons.length > 0 && (
+        <Card className="glass-card border-2">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-warning">
-              <AlertTriangle className="h-5 w-5" />
-              Red Flags Detected ({redFlags.length})
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <ListChecks className="h-5 w-5 text-primary" />
+              Why did we get this result?
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {redFlags.map((flag, idx) => (
-              <div 
-                key={idx} 
-                className={`p-4 rounded-lg border ${getSeverityColor(flag.severity)} transition-all hover:scale-[1.02]`}
-              >
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{flag.text}</p>
-                      <Badge variant="outline" className="text-xs">
-                        {flag.severity.toUpperCase()}
-                      </Badge>
-                    </div>
-                    <p className="text-sm opacity-90">{flag.explanation}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Supporting Evidence Section */}
-      {supportingEvidence.length > 0 && (
-        <Card className="glass-card border-2 border-success/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-success">
-              <CheckCircle2 className="h-5 w-5" />
-              Supporting Evidence ({supportingEvidence.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {supportingEvidence.map((evidence, idx) => (
-              <div 
-                key={idx} 
-                className="p-4 rounded-lg border border-success/20 bg-success/5 transition-all hover:scale-[1.02]"
-              >
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <p className="font-semibold">{evidence.source}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Trust Score:</span>
-                        <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-                          {evidence.trustScore}%
-                        </Badge>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground italic">"{evidence.quote}"</p>
-                    <a 
-                      href="#" 
-                      className="text-xs text-primary hover:underline flex items-center gap-1"
+            {reasons.map((reason, i) => (
+              <div key={i} className="p-4 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-semibold text-sm">{reason.title}</p>
+                  {reason.impact && (
+                    <Badge
+                      variant="outline"
+                      className={
+                        reason.impact === "supports_real"
+                          ? claimStatusStyles.credible
+                          : reason.impact === "supports_fake"
+                          ? claimStatusStyles.misleading
+                          : claimStatusStyles.unverifiable
+                      }
                     >
-                      View source
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
+                      {reason.impact === "supports_real"
+                        ? "Points to real"
+                        : reason.impact === "supports_fake"
+                        ? "Points to fake"
+                        : "Unclear"}
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground">{reason.detail}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Claims */}
+      {claims.length > 0 && (
+        <Card className="glass-card border-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Quote className="h-5 w-5 text-primary" />
+              Main claims in this content
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {claims.map((c, i) => (
+              <div key={i} className="p-4 rounded-lg border border-border/60 space-y-2">
+                <p className="text-sm font-medium">"{c.claim}"</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="outline" className={claimStatusStyles[c.status] ?? claimStatusStyles.unverifiable}>
+                    {claimStatusLabel[c.status] ?? "Can't be verified"}
+                  </Badge>
+                  {c.note && <span className="text-xs text-muted-foreground">{c.note}</span>}
                 </div>
               </div>
             ))}
@@ -206,22 +200,91 @@ const AnalysisResult = ({ result }: AnalysisResultProps) => {
         </Card>
       )}
 
-      {/* AI Transparency Notice */}
-      <Card className="glass-card border border-border/50">
+      {/* Evidence */}
+      <Card className="glass-card border-2">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <BookOpen className="h-5 w-5 text-primary" />
+            Key evidence
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <div className="space-y-2">
+            <h4 className="font-semibold text-success">Checked facts</h4>
+            {verifiedFacts.length > 0 ? (
+              <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                {verifiedFacts.map((f, i) => (
+                  <li key={i}>{f}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground">Nothing in this content could be confirmed against a reliable source.</p>
+            )}
+          </div>
+
+          {assumptions.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-semibold text-warning">Assumptions (not facts)</h4>
+              <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                {assumptions.map((a, i) => (
+                  <li key={i}>{a}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {result.styleSignals && result.styleSignals.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-semibold">Writing-style hints (weak signals only)</h4>
+              <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+                {result.styleSignals.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ul>
+              <p className="text-xs text-muted-foreground">
+                Style alone never decides the result — badly written news can be true, and polished text can be false.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Final verdict */}
+      {result.finalVerdict && (
+        <Card className={`glass-card border-2 ${config.ring}`}>
+          <CardHeader>
+            <CardTitle className="text-lg">Final verdict</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm leading-relaxed">{result.finalVerdict}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Transparency */}
+      <Card className="glass-card border border-warning/30 bg-warning/5">
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="h-5 w-5 text-warning flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <p className="text-sm font-semibold">AI-Powered Analysis</p>
+              <p className="text-sm font-semibold">Please read this before you trust the result</p>
               <p className="text-xs text-muted-foreground">
-                This analysis was performed using advanced AI algorithms powered by AuthenX. 
-                Results should be used as a guide and verified with additional sources when 
-                making important decisions. Analysis completed in {(Math.random() * 2 + 1).toFixed(1)}s.
+                {result.evidence?.limitations ||
+                  "This analysis is based only on the text you provided and the AI's general knowledge."}{" "}
+                {result.liveSourcesUsed
+                  ? ""
+                  : "No live web search was used, so recent events cannot be confirmed."}{" "}
+                Treat this as a helpful signal, not a final truth — verify important claims with official or well-known news sources.
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      <p className="flex items-center gap-2 text-xs text-muted-foreground">
+        <Info className="h-3.5 w-3.5" />
+        Analysis powered by AuthenX AI.
+      </p>
     </div>
   );
 };

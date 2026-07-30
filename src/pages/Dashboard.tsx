@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import AnalysisResult from "@/components/AnalysisResult";
 import { MediaUpload } from "@/components/MediaUpload";
-import { AnalysisCharts } from "@/components/AnalysisCharts";
 import { Navbar } from "@/components/Navbar";
 
 const Dashboard = () => {
@@ -159,12 +158,8 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {result && (
-            <div className="space-y-6">
-              <AnalysisResult result={result} />
-              <AnalysisCharts />
-            </div>
-          )}
+          {result && <AnalysisResult result={result} />}
+
         </div>
       </div>
     </div>

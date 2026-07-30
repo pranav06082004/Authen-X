@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Zap, BarChart3, Lock, ArrowRight, Twitter, Github, Linkedin, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useParallax } from "@/hooks/useParallax";
-import { ParticleBackground } from "@/components/ParticleBackground";
 import { StatsCounter } from "@/components/StatsCounter";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
@@ -19,9 +18,6 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Particle Background */}
-      <ParticleBackground />
-      
       {/* Navigation */}
       <Navbar variant="public" currentPage="home" />
 

@@ -91,6 +91,34 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Dashboard preview fading out of the black hero */}
+      <section className="relative -mt-10 px-6 pb-10 bg-[#000000] overflow-hidden">
+        <div className="container mx-auto max-w-6xl relative">
+          <div
+            className="relative rounded-t-2xl overflow-hidden border-t border-x border-white/10"
+            style={{
+              maskImage:
+                "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 18%, #000 55%, rgba(0,0,0,0.35) 92%, transparent 100%)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 18%, #000 55%, rgba(0,0,0,0.35) 92%, transparent 100%)",
+            }}
+          >
+            <img
+              src={dashboardPreview}
+              alt="AuthenX dashboard showing news verification analytics and confidence scores"
+              width={1600}
+              height={1008}
+              loading="lazy"
+              className="w-full opacity-50 saturate-[0.85]"
+            />
+          </div>
+        </div>
+        {/* Smooth blend into the next section */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
+      </section>
+
+
+
       {/* Stats Counter */}
       <StatsCounter />
 

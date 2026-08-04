@@ -20,16 +20,18 @@ const Landing = () => {
   const scrollY = useParallax();
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen bg-[#050505] relative overflow-hidden">
+      {/* Page-wide premium dark backdrop */}
+      <HeroBackground />
+
       {/* Navigation */}
       <Navbar variant="public" currentPage="home" />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-10 px-6 relative overflow-hidden bg-[#000000]">
-        <HeroBackground />
-
+      <section className="pt-32 pb-10 px-6 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10 max-w-4xl">
           <div 
+
             className="inline-block mb-6 px-4 py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md"
             style={{
               transform: `translateY(${scrollY * 0.1}px)`,
@@ -92,7 +94,7 @@ const Landing = () => {
       </section>
 
       {/* Dashboard preview fading out of the black hero */}
-      <section className="relative -mt-10 px-6 pb-10 bg-[#000000] overflow-hidden">
+      <section className="relative z-10 -mt-10 px-6 pb-10 overflow-hidden">
         <div className="container mx-auto max-w-6xl relative">
           <div
             className="relative rounded-t-2xl overflow-hidden border-t border-x border-white/10"
@@ -114,7 +116,7 @@ const Landing = () => {
           </div>
         </div>
         {/* Smooth blend into the next section */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#050505]" />
       </section>
 
 
@@ -123,7 +125,8 @@ const Landing = () => {
       <StatsCounter />
 
       {/* Features Section */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 relative z-10">
+
         <div className="container mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl font-bold text-center mb-4">Powerful Features</h2>
@@ -177,7 +180,7 @@ const Landing = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 bg-card/30">
+      <section className="py-20 px-6 relative z-10 bg-white/[0.02] border-y border-white/5">
         <div className="container mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
@@ -210,7 +213,7 @@ const Landing = () => {
       <FAQSection />
 
       {/* CTA Section */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 relative z-10">
         <div className="container mx-auto">
           <AnimatedSection direction="up">
             <TiltCard 
@@ -236,7 +239,7 @@ const Landing = () => {
       <BrandSection />
 
       {/* Footer */}
-      <footer className="py-16 px-6 border-t border-border/50 bg-card/20">
+      <footer className="py-16 px-6 border-t border-border/50 relative z-10 bg-black/40 backdrop-blur-sm">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             {/* Brand */}

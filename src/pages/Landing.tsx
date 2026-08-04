@@ -12,6 +12,9 @@ import { TiltCard } from "@/components/TiltCard";
 import BrandSection from "@/components/BrandSection";
 import { FloatingGeometryCanvas } from "@/components/FloatingGeometryCanvas";
 import { Navbar } from "@/components/Navbar";
+import { HeroBackground } from "@/components/HeroBackground";
+import dashboardPreview from "@/assets/dashboard-preview.jpg";
+
 
 const Landing = () => {
   const scrollY = useParallax();

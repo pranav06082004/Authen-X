@@ -116,7 +116,7 @@ const BrandSection = () => {
 
       <section
         ref={sectionRef}
-        className="relative w-full overflow-hidden bg-background py-20 md:py-24 lg:py-32"
+        className="relative w-full overflow-hidden py-20 md:py-24 lg:py-32"
         style={{ cursor: !isMobile && isInSection ? 'none' : 'default' }}
       >
         {/* Spotlight/glow effect */}

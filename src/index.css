@@ -148,6 +148,16 @@
     animation: glow 3s ease-in-out infinite alternate;
   }
 
+  .animate-float {
+    animation: float-chip 7s ease-in-out infinite;
+  }
+
+  @keyframes float-chip {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-14px) rotate(2deg); }
+  }
+
+
   @keyframes glow {
     from {
       box-shadow: 0 0 20px hsl(160 84% 39% / 0.3), 0 0 30px hsl(173 80% 40% / 0.2);

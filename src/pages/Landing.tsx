@@ -25,21 +25,12 @@ const Landing = () => {
       <Navbar variant="public" currentPage="home" />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-10 px-6 relative overflow-hidden">
-        {/* Parallax background elements */}
-        <div 
-          className="absolute inset-0 opacity-5 pointer-events-none"
-          style={{
-            transform: `translateY(${scrollY * 0.3}px)`,
-          }}
-        >
-          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl" />
-        </div>
+      <section className="pt-32 pb-10 px-6 relative overflow-hidden bg-[#000000]">
+        <HeroBackground />
 
         <div className="container mx-auto text-center relative z-10 max-w-4xl">
           <div 
-            className="inline-block mb-6 px-4 py-2 glass-card rounded-full"
+            className="inline-block mb-6 px-4 py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md"
             style={{
               transform: `translateY(${scrollY * 0.1}px)`,
             }}
@@ -48,11 +39,12 @@ const Landing = () => {
           </div>
           
           <h1 
-            className="text-6xl md:text-7xl font-bold mb-6 glow-text"
+            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 text-foreground tracking-tight"
             style={{
               transform: `translateY(${scrollY * 0.15}px)`,
             }}
           >
+
             Stop Fake News<br />
             <span className="bg-gradient-hero bg-clip-text text-transparent">
               With AI Precision

@@ -66,11 +66,12 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
         }}
         {...handlers}
       >
-        <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
+        <AccordionTrigger className="text-left text-base font-semibold tracking-tight hover:no-underline py-5">
           {faq.question}
         </AccordionTrigger>
-        <AccordionContent className="text-muted-foreground pb-5">
+        <AccordionContent className="text-base leading-relaxed text-muted-foreground pb-5">
           {faq.answer}
+
         </AccordionContent>
       </AccordionItem>
     </div>

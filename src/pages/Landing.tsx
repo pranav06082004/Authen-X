@@ -229,7 +229,7 @@ const Landing = () => {
       <BrandSection />
 
       {/* Footer */}
-      <footer className="py-16 px-6 border-t border-border/50 relative z-10 bg-black/40 backdrop-blur-sm">
+      <footer className="py-16 px-6 border-t border-white/5 relative z-10">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             {/* Brand */}

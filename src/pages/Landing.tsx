@@ -238,9 +238,10 @@ const Landing = () => {
               <div className="flex items-center gap-2 mb-4">
                 <span className="font-bold text-xl text-primary">AuthenX</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm leading-relaxed text-muted-foreground mb-6 max-w-xs">
                 AI-Powered Authenticity Detection Platform. Fighting misinformation with cutting-edge technology.
               </p>
+
               <div className="flex gap-4">
                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   <Twitter className="h-5 w-5" />

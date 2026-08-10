@@ -1,5 +1,3 @@
-import { Code2, MonitorSmartphone, GraduationCap } from "lucide-react";
-
 const STARS = [
   { top: 170, left: "46%", size: 3, opacity: 0.55 },
   { top: 250, left: "53%", size: 2, opacity: 0.4 },
@@ -11,12 +9,6 @@ const STARS = [
   { top: 300, left: "36%", size: 2, opacity: 0.25 },
   { top: 620, left: "55%", size: 3, opacity: 0.35 },
   { top: 440, left: "64%", size: 2, opacity: 0.25 },
-];
-
-const CHIPS = [
-  { icon: Code2, top: 170, className: "right-[10%]", delay: "0s" },
-  { icon: MonitorSmartphone, top: 470, className: "left-[7%]", delay: "1.2s" },
-  { icon: GraduationCap, top: 560, className: "right-[8%]", delay: "2.1s" },
 ];
 
 /**
@@ -109,25 +101,6 @@ export const HeroBackground = () => {
             opacity: s.opacity,
           }}
         />
-      ))}
-
-      {/* Floating glass chips — hidden on small screens */}
-      {CHIPS.map(({ icon: Icon, top, className, delay }, i) => (
-        <div
-          key={i}
-          className={`hidden md:flex absolute ${className} w-12 h-12 items-center justify-center rounded-2xl animate-float`}
-          style={{
-            top,
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.14)",
-            boxShadow: "0 8px 30px rgba(0,0,0,0.45)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            animationDelay: delay,
-          }}
-        >
-          <Icon className="h-5 w-5 text-white/70" />
-        </div>
       ))}
 
       {/* Vignette so edges fade to pure black */}

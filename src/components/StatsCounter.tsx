@@ -102,16 +102,17 @@ const StatCard = ({ stat, isVisible }: { stat: StatItem; isVisible: boolean }) =
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-hero mb-4 group-hover:scale-110 transition-transform duration-300">
-          <Icon className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-hero mb-5 group-hover:scale-110 transition-transform duration-300">
+          <Icon className="w-7 h-7 text-white" />
         </div>
-        <div className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-hero bg-clip-text text-transparent">
+        <div className="text-4xl md:text-5xl font-bold tracking-tight mb-2 bg-gradient-hero bg-clip-text text-transparent">
           {stat.value >= 1000 
             ? `${(count / 1000).toFixed(count >= 1000 ? 0 : 1)}k`
             : count}
           {stat.suffix}
         </div>
-        <div className="text-muted-foreground font-medium">{stat.label}</div>
+        <div className="text-sm uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</div>
+
       </div>
     </div>
   );

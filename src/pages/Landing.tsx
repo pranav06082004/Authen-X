@@ -113,17 +113,14 @@ const Landing = () => {
       <StatsCounter />
 
       {/* Features Section */}
-      <section className="py-20 px-6 relative z-10">
+      <section className="py-24 px-6 relative z-10">
+        <div className="container mx-auto max-w-6xl">
+          <SectionHeading
+            title="Powerful Features"
+            subtitle="Built with cutting-edge technology to ensure accuracy and reliability"
+          />
 
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4">Powerful Features</h2>
-            <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
-              Built with cutting-edge technology to ensure accuracy and reliability
-            </p>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {[
               {
                 icon: Zap,
@@ -144,20 +141,20 @@ const Landing = () => {
                 gradient: "bg-gradient-warning"
               }
             ].map((feature, index) => (
-              <AnimatedSection key={index} delay={index * 150} direction="up">
+              <AnimatedSection key={index} delay={index * 150} direction="up" className="h-full">
                 <TiltCard 
                   className="glass-card p-8 rounded-xl cursor-pointer h-full"
                   maxTilt={5}
                   scale={1.02}
                 >
                   <div 
-                    className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6`}
+                    className={`w-12 h-12 rounded-xl ${feature.gradient} flex items-center justify-center mb-6`}
                     style={{ transform: 'translateZ(30px)' }}
                   >
-                    <feature.icon className="h-7 w-7 text-white" />
+                    <feature.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4" style={{ transform: 'translateZ(20px)' }}>{feature.title}</h3>
-                  <p className="text-muted-foreground" style={{ transform: 'translateZ(10px)' }}>
+                  <h3 className="text-xl font-semibold tracking-tight mb-3" style={{ transform: 'translateZ(20px)' }}>{feature.title}</h3>
+                  <p className="text-base leading-relaxed text-muted-foreground" style={{ transform: 'translateZ(10px)' }}>
                     {feature.description}
                   </p>
                 </TiltCard>
@@ -168,31 +165,33 @@ const Landing = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 relative z-10 border-y border-white/5">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
-          </AnimatedSection>
+      <section className="py-24 px-6 relative z-10 border-y border-white/5">
+        <div className="container mx-auto max-w-6xl">
+          <SectionHeading
+            title="How It Works"
+            subtitle="Three simple steps from raw content to a clear, evidence-based verdict"
+          />
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {[
               { step: 1, title: "Input Content", desc: "Paste news article text or provide a URL to analyze" },
               { step: 2, title: "AI Analysis", desc: "Our AI model processes and evaluates credibility" },
               { step: 3, title: "Get Results", desc: "Receive verdict, confidence score, and key insights" },
             ].map((item, index) => (
               <AnimatedSection key={item.step} delay={index * 200} direction="up">
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+                <div className="text-center px-2">
+                  <div className="w-14 h-14 rounded-full bg-gradient-hero flex items-center justify-center text-xl font-bold mx-auto mb-6">
                     {item.step}
                   </div>
-                  <h3 className="text-xl font-bold mb-4">{item.title}</h3>
-                  <p className="text-muted-foreground">{item.desc}</p>
+                  <h3 className="text-xl font-semibold tracking-tight mb-3">{item.title}</h3>
+                  <p className="text-base leading-relaxed text-muted-foreground max-w-xs mx-auto">{item.desc}</p>
                 </div>
               </AnimatedSection>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Testimonials */}
       <TestimonialsCarousel />

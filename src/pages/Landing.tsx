@@ -27,25 +27,23 @@ const Landing = () => {
       <Navbar variant="public" currentPage="home" />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-10 px-6 relative overflow-hidden">
-        <div className="container mx-auto text-center relative z-10 max-w-4xl">
+      <section className="pt-32 pb-12 px-6 relative overflow-hidden">
+        <div className="container mx-auto text-center relative z-10 max-w-3xl">
           <div 
-
-            className="inline-block mb-6 px-4 py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md"
+            className="inline-block mb-8 px-4 py-1.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md"
             style={{
               transform: `translateY(${scrollY * 0.1}px)`,
             }}
           >
-            <span className="text-sm text-primary-glow font-medium">AI-Powered Truth Detection</span>
+            <span className="text-sm tracking-wide text-primary-glow font-medium">AI-Powered Truth Detection</span>
           </div>
           
           <h1 
-            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 text-foreground tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground tracking-tight leading-[1.08] text-balance"
             style={{
               transform: `translateY(${scrollY * 0.15}px)`,
             }}
           >
-
             Stop Fake News<br />
             <span className="bg-gradient-hero bg-clip-text text-transparent">
               With AI Precision
@@ -53,7 +51,7 @@ const Landing = () => {
           </h1>
           
           <p 
-            className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            className="mt-6 text-lg sm:text-xl leading-relaxed text-muted-foreground max-w-xl mx-auto"
             style={{
               transform: `translateY(${scrollY * 0.2}px)`,
             }}
@@ -63,25 +61,25 @@ const Landing = () => {
           </p>
 
           <div 
-            className="flex gap-4 justify-center mb-8"
+            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center"
             style={{
               transform: `translateY(${scrollY * 0.25}px)`,
             }}
           >
-            <Link to="/auth">
-              <Button size="lg" className="bg-gradient-hero text-lg px-8">
+            <Link to="/auth" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-hero text-base px-8">
                 Start Analyzing <ArrowRight className="ml-2" />
               </Button>
             </Link>
-            <Link to="/about">
-              <Button size="lg" variant="outline" className="text-lg px-8">
+            <Link to="/about" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-8">
                 Learn More
               </Button>
             </Link>
           </div>
-
         </div>
       </section>
+
 
       {/* Dashboard preview fading out of the black hero */}
       <section className="relative z-10 -mt-10 px-6 pb-10 overflow-hidden">

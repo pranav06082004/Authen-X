@@ -282,10 +282,11 @@ const Landing = () => {
 
             {/* Newsletter */}
             <div>
-              <h4 className="font-semibold mb-4">Stay Updated</h4>
-              <p className="text-sm text-muted-foreground mb-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Stay Updated</h4>
+              <p className="text-sm leading-relaxed text-muted-foreground mb-4">
                 Subscribe to our newsletter for the latest updates.
               </p>
+
               <NewsletterSignup />
             </div>
           </div>

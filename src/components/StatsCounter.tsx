@@ -141,10 +141,11 @@ export const StatsCounter = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-16 px-6 relative z-10">
-      <div className="container mx-auto">
-        <div className="glass-card rounded-2xl p-10 md:p-14">
-          <div className="grid md:grid-cols-3 gap-10">
+    <section ref={sectionRef} className="py-24 px-6 relative z-10">
+      <div className="container mx-auto max-w-6xl">
+        <div className="glass-card rounded-2xl p-8 sm:p-10 md:p-14">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+
             {stats.map((stat, index) => (
               <StatCard key={index} stat={stat} isVisible={isVisible} />
             ))}

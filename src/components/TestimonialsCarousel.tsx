@@ -109,7 +109,7 @@ const TestimonialCard = ({ testimonial, isCenter }: TestimonialCardProps) => {
         {...(isCenter ? handlers : {})}
       >
         <Quote className="w-8 h-8 text-primary/30 mb-4" style={{ transform: 'translateZ(15px)' }} />
-        <p className="text-foreground/90 mb-6 leading-relaxed" style={{ transform: 'translateZ(10px)' }}>
+        <p className="text-base text-foreground/90 mb-6 leading-relaxed" style={{ transform: 'translateZ(10px)' }}>
           "{testimonial.review}"
         </p>
         <div className="flex items-center gap-4" style={{ transform: 'translateZ(20px)' }}>

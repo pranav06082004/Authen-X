@@ -119,7 +119,7 @@ const TestimonialCard = ({ testimonial, isCenter }: TestimonialCardProps) => {
             className="w-12 h-12 rounded-full bg-muted"
           />
           <div className="flex-1">
-            <h4 className="font-semibold">{testimonial.name}</h4>
+            <h4 className="text-sm font-semibold tracking-tight">{testimonial.name}</h4>
             <p className="text-sm text-muted-foreground">{testimonial.role}</p>
           </div>
           <StarRating rating={testimonial.rating} />

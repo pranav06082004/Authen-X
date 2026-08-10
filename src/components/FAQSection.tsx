@@ -77,16 +77,13 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
 
 export const FAQSection = () => {
   return (
-    <section className="py-20 px-6">
+    <section className="py-24 px-6 relative z-10">
       <div className="container mx-auto max-w-3xl">
-        <AnimatedSection>
-          <h2 className="text-4xl font-bold text-center mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-center text-muted-foreground mb-12">
-            Everything you need to know about AuthenX
-          </p>
-        </AnimatedSection>
+        <SectionHeading
+          title="Frequently Asked Questions"
+          subtitle="Everything you need to know about AuthenX"
+        />
+
 
         <AnimatedSection delay={200}>
           <Accordion type="single" collapsible className="w-full space-y-4">

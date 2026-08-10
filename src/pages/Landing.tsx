@@ -271,7 +271,7 @@ const Landing = () => {
 
             {/* Company Links */}
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Company</h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
                 <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>

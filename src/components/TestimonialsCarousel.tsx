@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { use3DTilt } from "@/hooks/use3DTilt";
+import { SectionHeading } from "@/components/SectionHeading";
+
 
 interface Testimonial {
   id: number;

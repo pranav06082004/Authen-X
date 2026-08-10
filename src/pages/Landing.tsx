@@ -170,7 +170,7 @@ const Landing = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 relative z-10 bg-white/[0.02] border-y border-white/5">
+      <section className="py-20 px-6 relative z-10 border-y border-white/5">
         <div className="container mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
@@ -229,7 +229,7 @@ const Landing = () => {
       <BrandSection />
 
       {/* Footer */}
-      <footer className="py-16 px-6 border-t border-border/50 relative z-10 bg-black/40 backdrop-blur-sm">
+      <footer className="py-16 px-6 border-t border-white/5 relative z-10">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             {/* Brand */}

@@ -95,12 +95,12 @@ const TestimonialCard = ({ testimonial, isCenter }: TestimonialCardProps) => {
         style={{
           ...(isCenter ? cardStyle : {}),
           transformStyle: 'preserve-3d',
-          borderTop: '2px solid rgb(16, 185, 129)',
-          borderRight: tiltState.isHovered && isCenter ? '2px solid rgb(20, 184, 166)' : 'none',
+          borderTop: '2px solid rgb(139, 92, 246)',
+          borderRight: tiltState.isHovered && isCenter ? '2px solid rgb(124, 58, 237)' : 'none',
           borderBottom: 'none',
           borderLeft: 'none',
           boxShadow: tiltState.isHovered && isCenter
-            ? '0 20px 60px rgba(16, 185, 129, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(20, 184, 166, 0.4)'
+            ? '0 20px 60px rgba(139, 92, 246, 0.25), 0 10px 30px rgba(0, 0, 0, 0.4), 0 -4px 20px rgba(124, 58, 237, 0.4)'
             : '0 4px 20px rgba(0, 0, 0, 0.15)',
 
         }}
@@ -184,7 +184,7 @@ export const TestimonialsCarousel = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 rounded-full bg-background/80 backdrop-blur-sm"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 rounded-full bg-white/[0.06] backdrop-blur-md"
             onClick={prevSlide}
           >
             <ChevronLeft className="w-5 h-5" />
@@ -192,7 +192,7 @@ export const TestimonialsCarousel = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 rounded-full bg-background/80 backdrop-blur-sm"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 rounded-full bg-white/[0.06] backdrop-blur-md"
             onClick={nextSlide}
           >
             <ChevronRight className="w-5 h-5" />

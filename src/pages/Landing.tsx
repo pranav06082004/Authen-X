@@ -7,6 +7,8 @@ import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { FAQSection } from "@/components/FAQSection";
+import { SectionHeading } from "@/components/SectionHeading";
+
 
 import { TiltCard } from "@/components/TiltCard";
 import BrandSection from "@/components/BrandSection";

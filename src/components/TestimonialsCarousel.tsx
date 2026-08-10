@@ -155,14 +155,13 @@ export const TestimonialsCarousel = () => {
   };
 
   return (
-    <section className="py-20 px-6 relative z-10 overflow-hidden">
-      <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Trusted by Thousands</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            See what our users say about fighting misinformation with AuthenX
-          </p>
-        </div>
+    <section className="py-24 px-6 relative z-10 overflow-hidden">
+      <div className="container mx-auto max-w-6xl">
+        <SectionHeading
+          title="Trusted by Thousands"
+          subtitle="See what our users say about fighting misinformation with AuthenX"
+        />
+
 
         <div 
           className="relative max-w-5xl mx-auto"

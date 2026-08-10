@@ -10,7 +10,6 @@ import { FAQSection } from "@/components/FAQSection";
 
 import { TiltCard } from "@/components/TiltCard";
 import BrandSection from "@/components/BrandSection";
-import { FloatingGeometryCanvas } from "@/components/FloatingGeometryCanvas";
 import { Navbar } from "@/components/Navbar";
 import { HeroBackground } from "@/components/HeroBackground";
 import dashboardPreview from "@/assets/dashboard-preview.jpg";
@@ -81,15 +80,6 @@ const Landing = () => {
             </Link>
           </div>
 
-          {/* 3D Cube - Centered below buttons */}
-          <div 
-            className="max-w-3xl mx-auto"
-            style={{
-              transform: `translateY(${scrollY * -0.1}px)`,
-            }}
-          >
-            <FloatingGeometryCanvas />
-          </div>
         </div>
       </section>
 

@@ -7,6 +7,8 @@ import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { NewsletterSignup } from "@/components/NewsletterSignup";
 import { FAQSection } from "@/components/FAQSection";
+import { SectionHeading } from "@/components/SectionHeading";
+
 
 import { TiltCard } from "@/components/TiltCard";
 import BrandSection from "@/components/BrandSection";
@@ -27,25 +29,23 @@ const Landing = () => {
       <Navbar variant="public" currentPage="home" />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-10 px-6 relative overflow-hidden">
-        <div className="container mx-auto text-center relative z-10 max-w-4xl">
+      <section className="pt-32 pb-12 px-6 relative overflow-hidden">
+        <div className="container mx-auto text-center relative z-10 max-w-3xl">
           <div 
-
-            className="inline-block mb-6 px-4 py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md"
+            className="inline-block mb-8 px-4 py-1.5 rounded-full border border-white/15 bg-white/5 backdrop-blur-md"
             style={{
               transform: `translateY(${scrollY * 0.1}px)`,
             }}
           >
-            <span className="text-sm text-primary-glow font-medium">AI-Powered Truth Detection</span>
+            <span className="text-sm tracking-wide text-primary-glow font-medium">AI-Powered Truth Detection</span>
           </div>
           
           <h1 
-            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6 text-foreground tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground tracking-tight leading-[1.08] text-balance"
             style={{
               transform: `translateY(${scrollY * 0.15}px)`,
             }}
           >
-
             Stop Fake News<br />
             <span className="bg-gradient-hero bg-clip-text text-transparent">
               With AI Precision
@@ -53,7 +53,7 @@ const Landing = () => {
           </h1>
           
           <p 
-            className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+            className="mt-6 text-lg sm:text-xl leading-relaxed text-muted-foreground max-w-xl mx-auto"
             style={{
               transform: `translateY(${scrollY * 0.2}px)`,
             }}
@@ -63,25 +63,25 @@ const Landing = () => {
           </p>
 
           <div 
-            className="flex gap-4 justify-center mb-8"
+            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center"
             style={{
               transform: `translateY(${scrollY * 0.25}px)`,
             }}
           >
-            <Link to="/auth">
-              <Button size="lg" className="bg-gradient-hero text-lg px-8">
+            <Link to="/auth" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-hero text-base px-8">
                 Start Analyzing <ArrowRight className="ml-2" />
               </Button>
             </Link>
-            <Link to="/about">
-              <Button size="lg" variant="outline" className="text-lg px-8">
+            <Link to="/about" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-8">
                 Learn More
               </Button>
             </Link>
           </div>
-
         </div>
       </section>
+
 
       {/* Dashboard preview fading out of the black hero */}
       <section className="relative z-10 -mt-10 px-6 pb-10 overflow-hidden">
@@ -115,17 +115,14 @@ const Landing = () => {
       <StatsCounter />
 
       {/* Features Section */}
-      <section className="py-20 px-6 relative z-10">
+      <section className="py-24 px-6 relative z-10">
+        <div className="container mx-auto max-w-6xl">
+          <SectionHeading
+            title="Powerful Features"
+            subtitle="Built with cutting-edge technology to ensure accuracy and reliability"
+          />
 
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-4">Powerful Features</h2>
-            <p className="text-center text-muted-foreground mb-16 max-w-2xl mx-auto">
-              Built with cutting-edge technology to ensure accuracy and reliability
-            </p>
-          </AnimatedSection>
-
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {[
               {
                 icon: Zap,
@@ -146,20 +143,20 @@ const Landing = () => {
                 gradient: "bg-gradient-warning"
               }
             ].map((feature, index) => (
-              <AnimatedSection key={index} delay={index * 150} direction="up">
+              <AnimatedSection key={index} delay={index * 150} direction="up" className="h-full">
                 <TiltCard 
                   className="glass-card p-8 rounded-xl cursor-pointer h-full"
                   maxTilt={5}
                   scale={1.02}
                 >
                   <div 
-                    className={`w-14 h-14 rounded-xl ${feature.gradient} flex items-center justify-center mb-6`}
+                    className={`w-12 h-12 rounded-xl ${feature.gradient} flex items-center justify-center mb-6`}
                     style={{ transform: 'translateZ(30px)' }}
                   >
-                    <feature.icon className="h-7 w-7 text-white" />
+                    <feature.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4" style={{ transform: 'translateZ(20px)' }}>{feature.title}</h3>
-                  <p className="text-muted-foreground" style={{ transform: 'translateZ(10px)' }}>
+                  <h3 className="text-xl font-semibold tracking-tight mb-3" style={{ transform: 'translateZ(20px)' }}>{feature.title}</h3>
+                  <p className="text-base leading-relaxed text-muted-foreground" style={{ transform: 'translateZ(10px)' }}>
                     {feature.description}
                   </p>
                 </TiltCard>
@@ -170,31 +167,33 @@ const Landing = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 relative z-10 border-y border-white/5">
-        <div className="container mx-auto">
-          <AnimatedSection>
-            <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>
-          </AnimatedSection>
+      <section className="py-24 px-6 relative z-10 border-y border-white/5">
+        <div className="container mx-auto max-w-6xl">
+          <SectionHeading
+            title="How It Works"
+            subtitle="Three simple steps from raw content to a clear, evidence-based verdict"
+          />
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-10 max-w-5xl mx-auto">
             {[
               { step: 1, title: "Input Content", desc: "Paste news article text or provide a URL to analyze" },
               { step: 2, title: "AI Analysis", desc: "Our AI model processes and evaluates credibility" },
               { step: 3, title: "Get Results", desc: "Receive verdict, confidence score, and key insights" },
             ].map((item, index) => (
               <AnimatedSection key={item.step} delay={index * 200} direction="up">
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+                <div className="text-center px-2">
+                  <div className="w-14 h-14 rounded-full bg-gradient-hero flex items-center justify-center text-xl font-bold mx-auto mb-6">
                     {item.step}
                   </div>
-                  <h3 className="text-xl font-bold mb-4">{item.title}</h3>
-                  <p className="text-muted-foreground">{item.desc}</p>
+                  <h3 className="text-xl font-semibold tracking-tight mb-3">{item.title}</h3>
+                  <p className="text-base leading-relaxed text-muted-foreground max-w-xs mx-auto">{item.desc}</p>
                 </div>
               </AnimatedSection>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Testimonials */}
       <TestimonialsCarousel />
@@ -203,20 +202,20 @@ const Landing = () => {
       <FAQSection />
 
       {/* CTA Section */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="container mx-auto">
+      <section className="py-24 px-6 relative z-10">
+        <div className="container mx-auto max-w-6xl">
           <AnimatedSection direction="up">
             <TiltCard 
-              className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto"
+              className="glass-card px-8 py-14 sm:px-12 rounded-2xl text-center max-w-3xl mx-auto"
               maxTilt={3}
               scale={1.01}
             >
-              <h2 className="text-4xl font-bold mb-6" style={{ transform: 'translateZ(20px)' }}>Ready to Verify Truth?</h2>
-              <p className="text-xl text-muted-foreground mb-8" style={{ transform: 'translateZ(15px)' }}>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-balance" style={{ transform: 'translateZ(20px)' }}>Ready to Verify Truth?</h2>
+              <p className="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mx-auto" style={{ transform: 'translateZ(15px)' }}>
                 Join thousands using AuthenX to combat misinformation
               </p>
-              <Link to="/auth" style={{ transform: 'translateZ(30px)', display: 'inline-block' }}>
-                <Button size="lg" className="bg-gradient-hero text-lg px-8">
+              <Link to="/auth" className="inline-block mt-8" style={{ transform: 'translateZ(30px)' }}>
+                <Button size="lg" className="bg-gradient-hero text-base px-8">
                   Get Started for Free
                 </Button>
               </Link>
@@ -225,21 +224,24 @@ const Landing = () => {
         </div>
       </section>
 
+
       {/* Brand Section */}
       <BrandSection />
 
       {/* Footer */}
       <footer className="py-16 px-6 border-t border-white/5 relative z-10">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-12">
+
             {/* Brand */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <span className="font-bold text-xl text-primary">AuthenX</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm leading-relaxed text-muted-foreground mb-6 max-w-xs">
                 AI-Powered Authenticity Detection Platform. Fighting misinformation with cutting-edge technology.
               </p>
+
               <div className="flex gap-4">
                 <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   <Twitter className="h-5 w-5" />
@@ -258,7 +260,7 @@ const Landing = () => {
 
             {/* Product Links */}
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Product</h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li><Link to="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
                 <li><Link to="/history" className="hover:text-primary transition-colors">Analysis History</Link></li>
@@ -269,7 +271,7 @@ const Landing = () => {
 
             {/* Company Links */}
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Company</h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
                 <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
@@ -280,17 +282,19 @@ const Landing = () => {
 
             {/* Newsletter */}
             <div>
-              <h4 className="font-semibold mb-4">Stay Updated</h4>
-              <p className="text-sm text-muted-foreground mb-4">
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">Stay Updated</h4>
+              <p className="text-sm leading-relaxed text-muted-foreground mb-4">
                 Subscribe to our newsletter for the latest updates.
               </p>
+
               <NewsletterSignup />
             </div>
           </div>
           
           <div className="pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <p>© 2025 AuthenX. All rights reserved.</p>
-            <div className="flex gap-6">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+
               <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
               <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
               <a href="#" className="hover:text-primary transition-colors">Cookie Policy</a>

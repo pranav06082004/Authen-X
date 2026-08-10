@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { use3DTilt } from "@/hooks/use3DTilt";
+import { SectionHeading } from "@/components/SectionHeading";
+
 
 interface Testimonial {
   id: number;
@@ -107,7 +109,7 @@ const TestimonialCard = ({ testimonial, isCenter }: TestimonialCardProps) => {
         {...(isCenter ? handlers : {})}
       >
         <Quote className="w-8 h-8 text-primary/30 mb-4" style={{ transform: 'translateZ(15px)' }} />
-        <p className="text-foreground/90 mb-6 leading-relaxed" style={{ transform: 'translateZ(10px)' }}>
+        <p className="text-base text-foreground/90 mb-6 leading-relaxed" style={{ transform: 'translateZ(10px)' }}>
           "{testimonial.review}"
         </p>
         <div className="flex items-center gap-4" style={{ transform: 'translateZ(20px)' }}>
@@ -117,7 +119,7 @@ const TestimonialCard = ({ testimonial, isCenter }: TestimonialCardProps) => {
             className="w-12 h-12 rounded-full bg-muted"
           />
           <div className="flex-1">
-            <h4 className="font-semibold">{testimonial.name}</h4>
+            <h4 className="text-sm font-semibold tracking-tight">{testimonial.name}</h4>
             <p className="text-sm text-muted-foreground">{testimonial.role}</p>
           </div>
           <StarRating rating={testimonial.rating} />
@@ -155,14 +157,13 @@ export const TestimonialsCarousel = () => {
   };
 
   return (
-    <section className="py-20 px-6 relative z-10 overflow-hidden">
-      <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Trusted by Thousands</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            See what our users say about fighting misinformation with AuthenX
-          </p>
-        </div>
+    <section className="py-24 px-6 relative z-10 overflow-hidden">
+      <div className="container mx-auto max-w-6xl">
+        <SectionHeading
+          title="Trusted by Thousands"
+          subtitle="See what our users say about fighting misinformation with AuthenX"
+        />
+
 
         <div 
           className="relative max-w-5xl mx-auto"

@@ -102,16 +102,17 @@ const StatCard = ({ stat, isVisible }: { stat: StatItem; isVisible: boolean }) =
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-hero mb-4 group-hover:scale-110 transition-transform duration-300">
-          <Icon className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-hero mb-5 group-hover:scale-110 transition-transform duration-300">
+          <Icon className="w-7 h-7 text-white" />
         </div>
-        <div className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-hero bg-clip-text text-transparent">
+        <div className="text-4xl md:text-5xl font-bold tracking-tight mb-2 bg-gradient-hero bg-clip-text text-transparent">
           {stat.value >= 1000 
             ? `${(count / 1000).toFixed(count >= 1000 ? 0 : 1)}k`
             : count}
           {stat.suffix}
         </div>
-        <div className="text-muted-foreground font-medium">{stat.label}</div>
+        <div className="text-sm uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</div>
+
       </div>
     </div>
   );
@@ -140,10 +141,11 @@ export const StatsCounter = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-16 px-6 relative z-10">
-      <div className="container mx-auto">
-        <div className="glass-card rounded-2xl p-10 md:p-14">
-          <div className="grid md:grid-cols-3 gap-10">
+    <section ref={sectionRef} className="py-24 px-6 relative z-10">
+      <div className="container mx-auto max-w-6xl">
+        <div className="glass-card rounded-2xl p-8 sm:p-10 md:p-14">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+
             {stats.map((stat, index) => (
               <StatCard key={index} stat={stat} isVisible={isVisible} />
             ))}

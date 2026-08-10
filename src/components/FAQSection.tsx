@@ -5,7 +5,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { AnimatedSection } from "@/components/AnimatedSection";
+import { SectionHeading } from "@/components/SectionHeading";
 import { use3DTilt } from "@/hooks/use3DTilt";
+
 
 const faqs = [
   {
@@ -64,11 +66,12 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
         }}
         {...handlers}
       >
-        <AccordionTrigger className="text-left font-semibold hover:no-underline py-5">
+        <AccordionTrigger className="text-left text-base font-semibold tracking-tight hover:no-underline py-5">
           {faq.question}
         </AccordionTrigger>
-        <AccordionContent className="text-muted-foreground pb-5">
+        <AccordionContent className="text-base leading-relaxed text-muted-foreground pb-5">
           {faq.answer}
+
         </AccordionContent>
       </AccordionItem>
     </div>
@@ -77,16 +80,13 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
 
 export const FAQSection = () => {
   return (
-    <section className="py-20 px-6">
+    <section className="py-24 px-6 relative z-10">
       <div className="container mx-auto max-w-3xl">
-        <AnimatedSection>
-          <h2 className="text-4xl font-bold text-center mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-center text-muted-foreground mb-12">
-            Everything you need to know about AuthenX
-          </p>
-        </AnimatedSection>
+        <SectionHeading
+          title="Frequently Asked Questions"
+          subtitle="Everything you need to know about AuthenX"
+        />
+
 
         <AnimatedSection delay={200}>
           <Accordion type="single" collapsible className="w-full space-y-4">

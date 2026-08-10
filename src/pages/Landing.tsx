@@ -170,7 +170,7 @@ const Landing = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-6 relative z-10 bg-white/[0.02] border-y border-white/5">
+      <section className="py-20 px-6 relative z-10 border-y border-white/5">
         <div className="container mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl font-bold text-center mb-16">How It Works</h2>

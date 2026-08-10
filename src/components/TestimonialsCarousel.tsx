@@ -184,7 +184,7 @@ export const TestimonialsCarousel = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 rounded-full bg-background/80 backdrop-blur-sm"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 rounded-full bg-white/[0.06] backdrop-blur-md"
             onClick={prevSlide}
           >
             <ChevronLeft className="w-5 h-5" />
@@ -192,7 +192,7 @@ export const TestimonialsCarousel = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 rounded-full bg-background/80 backdrop-blur-sm"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 rounded-full bg-white/[0.06] backdrop-blur-md"
             onClick={nextSlide}
           >
             <ChevronRight className="w-5 h-5" />

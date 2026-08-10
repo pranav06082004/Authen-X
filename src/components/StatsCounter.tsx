@@ -80,7 +80,7 @@ const StatCard = ({ stat, isVisible }: { stat: StatItem; isVisible: boolean }) =
     >
       <div 
         ref={cardRef}
-        className="text-center group p-6 rounded-xl bg-background/50 backdrop-blur-sm"
+        className="text-center group p-6 rounded-xl bg-white/[0.03] backdrop-blur-sm"
         style={{
           transformStyle: 'preserve-3d',
           position: 'relative',

@@ -202,20 +202,20 @@ const Landing = () => {
       <FAQSection />
 
       {/* CTA Section */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="container mx-auto">
+      <section className="py-24 px-6 relative z-10">
+        <div className="container mx-auto max-w-6xl">
           <AnimatedSection direction="up">
             <TiltCard 
-              className="glass-card p-12 rounded-2xl text-center max-w-4xl mx-auto"
+              className="glass-card px-8 py-14 sm:px-12 rounded-2xl text-center max-w-3xl mx-auto"
               maxTilt={3}
               scale={1.01}
             >
-              <h2 className="text-4xl font-bold mb-6" style={{ transform: 'translateZ(20px)' }}>Ready to Verify Truth?</h2>
-              <p className="text-xl text-muted-foreground mb-8" style={{ transform: 'translateZ(15px)' }}>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-balance" style={{ transform: 'translateZ(20px)' }}>Ready to Verify Truth?</h2>
+              <p className="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl mx-auto" style={{ transform: 'translateZ(15px)' }}>
                 Join thousands using AuthenX to combat misinformation
               </p>
-              <Link to="/auth" style={{ transform: 'translateZ(30px)', display: 'inline-block' }}>
-                <Button size="lg" className="bg-gradient-hero text-lg px-8">
+              <Link to="/auth" className="inline-block mt-8" style={{ transform: 'translateZ(30px)' }}>
+                <Button size="lg" className="bg-gradient-hero text-base px-8">
                   Get Started for Free
                 </Button>
               </Link>
@@ -223,6 +223,7 @@ const Landing = () => {
           </AnimatedSection>
         </div>
       </section>
+
 
       {/* Brand Section */}
       <BrandSection />

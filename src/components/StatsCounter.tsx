@@ -91,11 +91,11 @@ const StatCard = ({ stat, isVisible }: { stat: StatItem; isVisible: boolean }) =
           borderTop: 'none',
           borderBottom: 'none',
           borderLeft: 'none',
-          borderRight: isHovered ? '3px solid rgb(16, 185, 129)' : '2px solid rgb(16, 185, 129)',
+          borderRight: isHovered ? '3px solid rgb(139, 92, 246)' : '2px solid rgb(139, 92, 246)',
           transition: 'transform 0.4s ease, box-shadow 0.4s ease, border 0.4s ease',
           boxShadow: isHovered
-            ? '0 20px 40px rgba(16, 185, 129, 0.3), 0 0 20px rgba(20, 184, 166, 0.25)'
-            : '0 4px 20px rgba(16, 185, 129, 0.1)',
+            ? '0 20px 40px rgba(139, 92, 246, 0.3), 0 0 20px rgba(124, 58, 237, 0.25)'
+            : '0 4px 20px rgba(139, 92, 246, 0.1)',
 
         }}
         onMouseEnter={() => setIsHovered(true)}

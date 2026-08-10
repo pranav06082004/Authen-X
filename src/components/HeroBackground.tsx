@@ -54,7 +54,7 @@ export const HeroBackground = () => {
         className="absolute right-[-10%] top-[70%] w-[70vw] h-[40vh] md:w-[700px] md:h-[700px]"
         style={{
           background:
-            "radial-gradient(circle at center, rgba(20,184,166,0.14) 0%, rgba(16,185,129,0.05) 45%, rgba(0,0,0,0) 75%)",
+            "radial-gradient(circle at center, rgba(139,92,246,0.14) 0%, rgba(124,58,237,0.05) 45%, rgba(0,0,0,0) 75%)",
           filter: "blur(140px)",
         }}
       />

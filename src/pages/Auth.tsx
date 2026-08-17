@@ -58,19 +58,27 @@ const Auth = () => {
 
   const handleOAuthSignIn = async (provider: 'google') => {
     setOauthLoading(provider);
-    const result = await lovable.auth.signInWithOAuth(provider, {
-      redirect_uri: window.location.origin,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-    if (result.error) {
-      toast.error(result.error.message ?? "Could not sign in. Please try again.");
+      if (error) {
+        toast.error(error.message ?? "Could not sign in. Please try again.");
+        setOauthLoading(null);
+        return;
+      }
+
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not sign in. Please try again.");
       setOauthLoading(null);
-      return;
     }
-
-    if (result.redirected) return;
-
-    navigate("/dashboard");
   };
 
 

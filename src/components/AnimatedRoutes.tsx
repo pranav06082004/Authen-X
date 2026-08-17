@@ -106,6 +106,14 @@ export function AnimatedRoutes() {
           }
         />
         <Route
+          path="/auth/callback"
+          element={
+            <PageTransition>
+              <AuthCallback />
+            </PageTransition>
+          }
+        />
+        <Route
           path="*"
           element={
             <PageTransition>

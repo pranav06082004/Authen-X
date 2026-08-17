@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { PageTransition } from "./PageTransition";
 import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
+import AuthCallback from "@/pages/AuthCallback";
 import Dashboard from "@/pages/Dashboard";
 import History from "@/pages/History";
 import Profile from "@/pages/Profile";

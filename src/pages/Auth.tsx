@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, CheckCircle2, XCircle, Lock, Mail, User, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
+
 import { toast } from "sonner";
 import { z } from "zod";
 import { Progress } from "@/components/ui/progress";
@@ -56,20 +58,23 @@ const Auth = () => {
   const strengthColor = passwordStrength < 40 ? "bg-destructive" : passwordStrength < 70 ? "bg-warning" : "bg-success";
   const strengthText = passwordStrength < 40 ? "Weak" : passwordStrength < 70 ? "Medium" : "Strong";
 
-  const handleOAuthSignIn = async (provider: 'google' | 'github') => {
+  const handleOAuthSignIn = async (provider: 'google') => {
     setOauthLoading(provider);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/dashboard`,
-      },
+    const result = await lovable.auth.signInWithOAuth(provider, {
+      redirect_uri: window.location.origin,
     });
 
-    if (error) {
-      toast.error(error.message);
+    if (result.error) {
+      toast.error(result.error.message ?? "Could not sign in. Please try again.");
       setOauthLoading(null);
+      return;
     }
+
+    if (result.redirected) return;
+
+    navigate("/dashboard");
   };
+
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -79,10 +79,10 @@ const Auth = () => {
         return;
       }
 
-      const { error } = await supabase.auth.getSession();
+      const { data: sessionData, error } = await supabase.auth.getSession();
 
-      if (error) {
-        toast.error(error.message ?? "Could not finish signing in. Please try again.");
+      if (error || !sessionData.session) {
+        toast.error(error?.message ?? "Could not finish signing in. Please try again.");
         setOauthLoading(null);
       } else {
         toast.success("Signed in successfully!");

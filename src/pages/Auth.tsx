@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, CheckCircle2, XCircle, Lock, Mail, User, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Progress } from "@/components/ui/progress";
@@ -59,21 +60,33 @@ const Auth = () => {
   const handleOAuthSignIn = async (provider: 'google') => {
     setOauthLoading(provider);
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
+      const result = await lovable.auth.signInWithOAuth(provider, {
+        // Keep OAuth on a public callback so the provider can return reliably.
+        // The callback route sends an authenticated user to the dashboard.
+        redirect_uri: `${window.location.origin}/auth/callback`,
       });
 
-      if (error) {
-        toast.error(error.message ?? "Could not sign in. Please try again.");
+      if (result.error) {
+        toast.error(result.error.message ?? "Could not sign in with Google. Please try again.");
         setOauthLoading(null);
         return;
       }
 
-      if (data?.url) {
-        window.location.href = data.url;
+      // In the preview the managed helper may complete the flow without a
+      // full-page redirect. AuthProvider will observe the session and the
+      // callback route handles the redirect case.
+      if (result.redirected) {
+        return;
+      }
+
+      const { data: sessionData, error } = await supabase.auth.getSession();
+
+      if (error || !sessionData.session) {
+        toast.error(error?.message ?? "Could not finish signing in. Please try again.");
+        setOauthLoading(null);
+      } else {
+        toast.success("Signed in successfully!");
+        navigate("/dashboard");
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not sign in. Please try again.");

@@ -14,12 +14,46 @@ import { Progress } from "@/components/ui/progress";
 
 const emailSchema = z.string().email("Invalid email address");
 const passwordSchema = z.string().min(6, "Password must be at least 6 characters");
+const authHealthUrl = `${import.meta.env.VITE_SUPABASE_URL}/auth/v1/health`;
+
+const checkAuthService = async () => {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 2500);
+
+  try {
+    const response = await fetch(authHealthUrl, {
+      headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    return response.ok;
+  } catch {
+    return false;
+  } finally {
+    window.clearTimeout(timeout);
+  }
+};
+
+const waitForAuthService = async () => {
+  const delays = [0, 350, 900, 1600];
+
+  for (const delay of delays) {
+    if (delay > 0) await new Promise((resolve) => window.setTimeout(resolve, delay));
+    if (await checkAuthService()) return true;
+  }
+
+  return false;
+};
+
+const isTransientAuthError = (error: { name?: string; status?: number }) =>
+  error.name === "AuthRetryableFetchError" && (error.status === 0 || (error.status ?? 0) >= 500);
 
 const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
+  const [authConnection, setAuthConnection] = useState<"checking" | "ready" | "unavailable">("checking");
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [activeTab, setActiveTab] = useState("signin");
@@ -28,6 +62,11 @@ const Auth = () => {
 
   // Check if user came from password reset link (query param, hash, or auth event)
   useEffect(() => {
+    let isMounted = true;
+    void checkAuthService().then((isReady) => {
+      if (isMounted) setAuthConnection(isReady ? "ready" : "unavailable");
+    });
+
     const type = searchParams.get("type");
     const hash = typeof window !== "undefined" ? window.location.hash : "";
     if (type === "recovery" || hash.includes("type=recovery")) {
@@ -42,6 +81,13 @@ const Auth = () => {
 
     return () => subscription.unsubscribe();
   }, [searchParams]);
+
+  const prepareAuthService = async () => {
+    setAuthConnection("checking");
+    const isReady = await waitForAuthService();
+    setAuthConnection(isReady ? "ready" : "unavailable");
+    return isReady;
+  };
 
   const getPasswordStrength = (pwd: string) => {
     let strength = 0;
@@ -107,32 +153,35 @@ const Auth = () => {
     try {
       emailSchema.parse(email);
       passwordSchema.parse(password);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
-        setIsLoading(false);
+      if (!(await prepareAuthService())) {
+        toast.error("The sign-up service is temporarily unavailable. Please try again in a moment.");
         return;
       }
-    }
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          full_name: fullName,
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            full_name: fullName,
+          },
         },
-      },
-    });
+      });
 
-    setIsLoading(false);
-
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Account created! Check your email for verification.");
-      navigate("/dashboard");
+      if (error) {
+        toast.error(error.message);
+      } else if (!data.session) {
+        toast.success("Account created! Check your email to confirm your account, then sign in.");
+        setActiveTab("signin");
+      } else {
+        toast.success("Account created! Check your email for verification.");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error(error instanceof z.ZodError ? error.errors[0].message : "Could not create your account. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -147,26 +196,30 @@ const Auth = () => {
     try {
       emailSchema.parse(email);
       passwordSchema.parse(password);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast.error(error.errors[0].message);
-        setIsLoading(false);
+      if (!(await prepareAuthService())) {
+        toast.error("The sign-in service is temporarily unavailable. Please try again in a moment.");
         return;
       }
-    }
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+      let { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    setIsLoading(false);
+      if (error && isTransientAuthError(error)) {
+        await new Promise((resolve) => window.setTimeout(resolve, 650));
+        const retry = await supabase.auth.signInWithPassword({ email, password });
+        data = retry.data;
+        error = retry.error;
+      }
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Signed in successfully!");
-      navigate("/dashboard");
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Signed in successfully!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error(error instanceof z.ZodError ? error.errors[0].message : "Could not sign in. Check your connection and try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -201,12 +201,11 @@ const Auth = () => {
         return;
       }
 
-      let { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      let { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error && isTransientAuthError(error)) {
         await new Promise((resolve) => window.setTimeout(resolve, 650));
         const retry = await supabase.auth.signInWithPassword({ email, password });
-        data = retry.data;
         error = retry.error;
       }
 
@@ -557,6 +556,14 @@ const Auth = () => {
                   <TabsTrigger value="signin" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#8b7cf6] data-[state=active]:to-[#6366f1] data-[state=active]:text-white rounded-md text-gray-400">Sign In</TabsTrigger>
                   <TabsTrigger value="signup" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#8b7cf6] data-[state=active]:to-[#6366f1] data-[state=active]:text-white rounded-md text-gray-400">Sign Up</TabsTrigger>
                 </TabsList>
+
+                {authConnection !== "ready" && (
+                  <p role="status" className="mb-4 text-center text-xs text-muted-foreground">
+                    {authConnection === "checking"
+                      ? "Connecting to secure sign-in…"
+                      : "Sign-in is temporarily unreachable. We’ll check again when you continue."}
+                  </p>
+                )}
 
                 <TabsContent value="signin" className="space-y-4">
                   <OAuthButtons />

@@ -4,6 +4,7 @@ import { ArrowLeft, History, User, Layout, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import Logo from "@/components/Logo";
 
 type NavbarVariant = "public" | "authenticated" | "back";
 

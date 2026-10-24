@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import AnalysisResult from "@/components/AnalysisResult";
+import MediaAnalysisResult from "@/components/MediaAnalysisResult";
 import { MediaUpload } from "@/components/MediaUpload";
 import { Navbar } from "@/components/Navbar";
 
@@ -51,6 +52,32 @@ const Dashboard = () => {
     } catch (error: any) {
       console.error('Analysis error:', error);
       toast.error(error.message || "Failed to analyze content");
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleMediaAnalyze = async () => {
+    if (!uploadedMediaUrls.length) return;
+    setIsAnalyzing(true);
+    setResult(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-media', {
+        body: {
+          imageUrl: uploadedMediaUrls[0],
+          context: inputText.trim() || undefined,
+        },
+      });
+
+      if (error) throw error;
+
+      setResult(data);
+      toast.success("Image analysis complete!");
+      setInputText("");
+    } catch (error: any) {
+      console.error('Media analysis error:', error);
+      toast.error(error.message || "Failed to analyze image");
     } finally {
       setIsAnalyzing(false);
     }
@@ -148,17 +175,23 @@ const Dashboard = () => {
                   )}
                   <Button
                     className="w-full bg-gradient-hero"
-                    onClick={() => handleAnalyze('text')}
+                    onClick={handleMediaAnalyze}
                     disabled={uploadedMediaUrls.length === 0 || isAnalyzing}
                   >
-                    {isAnalyzing ? "Analyzing..." : "Analyze Media"}
+                    {isAnalyzing ? "Analyzing..." : "Analyze Image"}
                   </Button>
                 </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
 
-          {result && <AnalysisResult result={result} />}
+          {result && (
+            result.kind === 'media' ? (
+              <MediaAnalysisResult result={result} imageUrl={uploadedMediaUrls[0]} />
+            ) : (
+              <AnalysisResult result={result} />
+            )
+          )}
 
         </div>
       </div>

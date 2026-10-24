@@ -5,11 +5,12 @@
 - [x] URL article analysis
 - [x] Google OAuth sign-in + email/password auth
 
-## Phase 1 — Image Authenticity Check (in progress)
+## Phase 1 — Image Authenticity Check ✅ (tested end-to-end)
 - [x] `analyze-media` edge function: vision model + real EXIF/metadata extraction
-- [x] Media tab in Dashboard runs image analysis
+- [x] Media tab in Dashboard runs image analysis (uploads are now automatic)
 - [x] `MediaAnalysisResult` result card (verdict, confidence, findings, metadata panel)
-- [ ] Deploy + end-to-end test with a real uploaded image
+- [x] Storage access rules fixed (upload previously blocked for all users)
+- [x] Verified live: upload → analysis → result card → saved to history
 
 ## Phase 2 — Suspicious Region Highlighting (planned)
 - [ ] Ask the model for bounding boxes of suspicious regions

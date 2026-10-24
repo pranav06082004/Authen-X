@@ -39,14 +39,18 @@ const History = () => {
     }
   };
 
-  const getVerdictIcon = (verdict: string) => {
+  const getVerdictDisplay = (verdict: string) => {
     switch (verdict) {
       case 'REAL':
-        return <CheckCircle2 className="h-5 w-5 text-success" />;
+        return { icon: <CheckCircle2 className="h-5 w-5 text-success" />, label: 'Likely Real' };
       case 'FAKE':
-        return <XCircle className="h-5 w-5 text-warning" />;
+        return { icon: <XCircle className="h-5 w-5 text-warning" />, label: 'Likely Fake' };
+      case 'AUTHENTIC':
+        return { icon: <CheckCircle2 className="h-5 w-5 text-success" />, label: 'Image: Looks Authentic' };
+      case 'LIKELY_MANIPULATED':
+        return { icon: <XCircle className="h-5 w-5 text-warning" />, label: 'Image: Likely Doctored' };
       default:
-        return <HelpCircle className="h-5 w-5 text-uncertain" />;
+        return { icon: <HelpCircle className="h-5 w-5 text-uncertain" />, label: 'Uncertain' };
     }
   };
 
@@ -84,9 +88,9 @@ const History = () => {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        {getVerdictIcon(analysis.result)}
+                        {getVerdictDisplay(analysis.result).icon}
                         <div>
-                          <CardTitle className="text-lg">{analysis.result}</CardTitle>
+                          <CardTitle className="text-lg">{getVerdictDisplay(analysis.result).label}</CardTitle>
                           <CardDescription>
                             {new Date(analysis.created_at).toLocaleString()}
                           </CardDescription>

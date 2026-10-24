@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, Image as ImageIcon, Video, FileWarning } from "lucide-react";
+import { Upload, X, Image as ImageIcon, Video, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
@@ -46,9 +46,67 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
     return { valid: true };
   };
 
-  const handleFiles = useCallback(async (fileList: FileList) => {
-    const newFiles: UploadedFile[] = [];
+  const uploadEntry = useCallback(async (entry: UploadedFile) => {
+    setFiles(prev => prev.map(f => f === entry ? { ...f, uploading: true, progress: 0 } : f));
 
+    const progressInterval = setInterval(() => {
+      setFiles(prev => prev.map(f => f.file === entry.file && f.progress < 90
+        ? { ...f, progress: f.progress + 10 }
+        : f
+      ));
+    }, 150);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        clearInterval(progressInterval);
+        toast.error('You must be logged in to upload files');
+        setFiles(prev => prev.filter(f => f.file !== entry.file));
+        return;
+      }
+
+      const fileExt = entry.file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('analysis-media')
+        .upload(fileName, entry.file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      clearInterval(progressInterval);
+
+      if (error) {
+        console.error('Upload error:', error);
+        toast.error('Failed to upload file');
+        setFiles(prev => prev.filter(f => f.file !== entry.file));
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('analysis-media')
+        .getPublicUrl(data.path);
+
+      setFiles(prev => prev.map(f => f.file === entry.file
+        ? { ...f, uploading: false, progress: 100, url: publicUrl }
+        : f
+      ));
+      toast.success('File uploaded successfully');
+
+      // Only images are reported for analysis (Phase 1 covers images)
+      if (entry.type === 'image') {
+        onMediaUploaded([publicUrl]);
+      }
+    } catch (error) {
+      clearInterval(progressInterval);
+      console.error('Upload error:', error);
+      toast.error('Failed to upload file');
+      setFiles(prev => prev.filter(f => f.file !== entry.file));
+    }
+  }, [onMediaUploaded]);
+
+  const handleFiles = useCallback((fileList: FileList) => {
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i];
       const validation = validateFile(file);
@@ -60,80 +118,22 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
 
       const isImage = ACCEPTED_IMAGE_TYPES.includes(file.type);
       const preview = URL.createObjectURL(file);
-
-      newFiles.push({
+      const entry: UploadedFile = {
         file,
         preview,
         type: isImage ? 'image' : 'video',
         uploading: false,
         progress: 0,
-      });
+      };
+
+      setFiles(prev => [...prev, entry]);
+      // Auto-upload right away — no manual per-file "Upload" click
+      uploadEntry(entry);
     }
-
-    setFiles(prev => [...prev, ...newFiles]);
-  }, []);
-
-  const uploadFile = async (fileIndex: number) => {
-    const fileData = files[fileIndex];
-    if (!fileData || fileData.uploading) return;
-
-    try {
-      setFiles(prev => prev.map((f, i) => i === fileIndex ? { ...f, uploading: true, progress: 0 } : f));
-
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error('You must be logged in to upload files');
-        return;
-      }
-
-      const fileExt = fileData.file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-
-      // Simulate progress for better UX
-      const progressInterval = setInterval(() => {
-        setFiles(prev => prev.map((f, i) => {
-          if (i === fileIndex && f.progress < 90) {
-            return { ...f, progress: f.progress + 10 };
-          }
-          return f;
-        }));
-      }, 200);
-
-      const { data, error } = await supabase.storage
-        .from('analysis-media')
-        .upload(fileName, fileData.file, {
-          cacheControl: '3600',
-          upsert: false
-        });
-
-      clearInterval(progressInterval);
-
-      if (error) {
-        console.error('Upload error:', error);
-        toast.error('Failed to upload file');
-        setFiles(prev => prev.filter((_, i) => i !== fileIndex));
-        return;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('analysis-media')
-        .getPublicUrl(data.path);
-
-      setFiles(prev => prev.map((f, i) => i === fileIndex ? { ...f, uploading: false, progress: 100, url: publicUrl } : f));
-      toast.success('File uploaded successfully');
-
-      // Notify parent component
-      onMediaUploaded([publicUrl]);
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast.error('Failed to upload file');
-      setFiles(prev => prev.filter((_, i) => i !== fileIndex));
-    }
-  };
+  }, [uploadEntry]);
 
   const removeFile = (index: number) => {
-    const file = files[index];
-    URL.revokeObjectURL(file.preview);
+    URL.revokeObjectURL(files[index].preview);
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
@@ -158,6 +158,7 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
     if (e.target.files) {
       handleFiles(e.target.files);
     }
+    e.target.value = '';
   };
 
   return (
@@ -174,11 +175,11 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
         `}
       >
         <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-        <h3 className="text-lg font-semibold mb-2">Drop files here or click to browse</h3>
+        <h3 className="text-lg font-semibold mb-2">Drop an image here or click to browse</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          Support for images and videos
+          Files upload automatically — no extra click needed
         </p>
-        
+
         <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
             <ImageIcon className="h-4 w-4" />
@@ -223,7 +224,7 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
 
                 {/* Remove Button */}
                 <button
-                  onClick={() => removeFile(index)}
+                  onClick={(e) => { e.stopPropagation(); removeFile(index); }}
                   className="absolute top-2 right-2 w-8 h-8 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <X className="h-4 w-4" />
@@ -242,29 +243,18 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
 
               {/* File Info */}
               <div className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {file.type === 'image' ? (
-                      <ImageIcon className="h-4 w-4 text-primary flex-shrink-0" />
-                    ) : (
-                      <Video className="h-4 w-4 text-primary flex-shrink-0" />
-                    )}
-                    <span className="text-xs truncate">{file.file.name}</span>
-                  </div>
-                  {!file.url && !file.uploading && (
-                    <button
-                      onClick={() => uploadFile(index)}
-                      className="text-xs text-primary hover:underline whitespace-nowrap ml-2"
-                    >
-                      Upload
-                    </button>
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  {file.type === 'image' ? (
+                    <ImageIcon className="h-4 w-4 text-primary flex-shrink-0" />
+                  ) : (
+                    <Video className="h-4 w-4 text-primary flex-shrink-0" />
                   )}
-                  {file.url && (
-                    <span className="text-xs text-success whitespace-nowrap ml-2">✓ Uploaded</span>
-                  )}
+                  <span className="text-xs truncate">{file.file.name}</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                   {(file.file.size / 1024 / 1024).toFixed(2)} MB
+                  {file.url && file.type === 'image' && <span className="text-success ml-1">✓ Ready</span>}
+                  {file.uploading && <Loader2 className="h-3 w-3 animate-spin ml-1" />}
                 </p>
               </div>
             </div>
@@ -272,10 +262,10 @@ export const MediaUpload = ({ onMediaUploaded }: MediaUploadProps) => {
         </div>
       )}
 
-      {files.length > 0 && files.some(f => !f.url && !f.uploading) && (
+      {files.length > 0 && files.every(f => f.type === 'video') && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground p-3 glass-card rounded-lg">
-          <FileWarning className="h-4 w-4" />
-          <span>Click "Upload" on each file to upload to storage</span>
+          <Video className="h-4 w-4" />
+          <span>Image analysis currently supports images only — upload a JPG, PNG or WebP photo.</span>
         </div>
       )}
     </div>

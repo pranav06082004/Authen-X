@@ -14,6 +14,7 @@ CORE RULES
 3. The file metadata summary (if any) was extracted programmatically by AuthenX from the actual file. Treat it as ground truth. Its absence is a WEAK signal only: social networks, messengers and screenshots routinely strip all metadata. Never treat "no metadata" alone as evidence of manipulation.
 4. You have NO live web access. Never invent sources, reverse-image-search results, or fact-check findings. If you cannot tell, say UNCERTAIN.
 5. Most ordinary, natural photos without visible anomalies deserve AUTHENTIC only with moderate confidence, and anything ambiguous deserves UNCERTAIN.
+6. REGION LOCALIZATION: when you can actually point at suspicious areas, report them as bounding boxes. Coordinates are approximate percentages of the image size (0-100), with x,y the top-left corner and width/height the box size. Only include a region when you can reasonably locate the anomaly; never return a box covering the whole image unless the anomaly is genuinely global. For a clean AUTHENTIC image, or when you cannot localize anything, return an empty array. Never invent precise boundaries.
 
 CONFIDENCE CALIBRATION (0-100)
 - 85-95: only when anomalies are clear, multiple and mutually reinforcing (e.g. obvious splicing seams plus inconsistent shadows).
@@ -30,6 +31,9 @@ Return ONLY a JSON object with exactly these keys:
   "summary": string,               // 1-2 plain sentences a non-expert understands
   "findings": [                    // 2-4 items
     { "title": string, "detail": string, "impact": "supports_authentic" | "supports_manipulated" | "unclear" }
+  ],
+  "regions": [                     // suspicious areas you can actually locate, up to 4; empty array when none
+    { "label": string, "detail": string, "x": number, "y": number, "width": number, "height": number, "severity": "low" | "medium" | "high" }
   ],
   "metadataObservations": string[], // what the file metadata does or does not tell us, honestly; may be empty
   "limitations": string,           // what you could not check and why
@@ -178,6 +182,35 @@ function clampConfidence(verdict: string, raw: unknown): number {
   return c;
 }
 
+function clampPct(raw: unknown): number {
+  const v = typeof raw === 'number' && isFinite(raw) ? raw : 0;
+  return Math.max(0, Math.min(100, Math.round(v)));
+}
+
+function sanitizeRegions(raw: unknown): { label: string; detail: string; x: number; y: number; width: number; height: number; severity: string }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((r: any) => {
+      const x = clampPct(r?.x);
+      const y = clampPct(r?.y);
+      let width = clampPct(r?.width);
+      let height = clampPct(r?.height);
+      if (x + width > 100) width = 100 - x;
+      if (y + height > 100) height = 100 - y;
+      return {
+        label: typeof r?.label === 'string' ? r.label.slice(0, 80) : 'Suspicious area',
+        detail: typeof r?.detail === 'string' ? r.detail.slice(0, 300) : '',
+        x,
+        y,
+        width,
+        height,
+        severity: ['low', 'medium', 'high'].includes(r?.severity) ? r.severity : 'medium',
+      };
+    })
+    .filter((r) => r.width > 1 && r.height > 1)
+    .slice(0, 6);
+}
+
 // ---------- SSE consumption of /v1/responses ----------
 
 async function readResponsesStream(res: Response): Promise<string> {
@@ -273,11 +306,28 @@ serve(async (req) => {
             schema: {
               type: 'object',
               additionalProperties: false,
-              required: ['verdict', 'confidence', 'summary', 'findings', 'metadataObservations', 'limitations', 'finalVerdict'],
+              required: ['verdict', 'confidence', 'summary', 'findings', 'regions', 'metadataObservations', 'limitations', 'finalVerdict'],
               properties: {
                 verdict: { type: 'string', enum: ['AUTHENTIC', 'LIKELY_MANIPULATED', 'UNCERTAIN'] },
                 confidence: { type: 'number' },
                 summary: { type: 'string' },
+                regions: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    additionalProperties: false,
+                    required: ['label', 'detail', 'x', 'y', 'width', 'height', 'severity'],
+                    properties: {
+                      label: { type: 'string' },
+                      detail: { type: 'string' },
+                      x: { type: 'number' },
+                      y: { type: 'number' },
+                      width: { type: 'number' },
+                      height: { type: 'number' },
+                      severity: { type: 'string', enum: ['low', 'medium', 'high'] },
+                    },
+                  },
+                },
                 findings: {
                   type: 'array',
                   items: {
@@ -343,6 +393,7 @@ serve(async (req) => {
       confidence: clampConfidence(verdict, ai.confidence),
       summary: typeof ai.summary === 'string' ? ai.summary : '',
       findings: Array.isArray(ai.findings) ? ai.findings.slice(0, 4) : [],
+      regions: sanitizeRegions(ai.regions),
       metadataObservations: Array.isArray(ai.metadataObservations) ? ai.metadataObservations.slice(0, 6) : [],
       limitations: typeof ai.limitations === 'string'
         ? ai.limitations
@@ -369,6 +420,7 @@ serve(async (req) => {
           result: result.verdict,
           confidence: result.confidence,
           key_phrases: result.findings.map((f: any) => f.title).filter(Boolean).slice(0, 4),
+          regions: result.regions,
         });
         if (insertError) console.error('Error saving analysis:', insertError);
       }

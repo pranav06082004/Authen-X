@@ -8,6 +8,13 @@
       "when": 1792820705754,
       "tag": "0000_analysis_media_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792912663227,
+      "tag": "0001_add_analyses_regions",
+      "breakpoints": true
     }
   ]
 }

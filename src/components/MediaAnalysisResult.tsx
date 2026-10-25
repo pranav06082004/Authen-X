@@ -12,12 +12,23 @@ import {
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
+export interface MediaRegion {
+  label: string;
+  detail?: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  severity?: "low" | "medium" | "high";
+}
+
 export interface MediaAnalysisResultData {
   kind?: "media";
   verdict: "AUTHENTIC" | "LIKELY_MANIPULATED" | "UNCERTAIN";
   confidence: number;
   summary?: string;
   findings?: { title: string; detail: string; impact?: "supports_authentic" | "supports_manipulated" | "unclear" }[];
+  regions?: MediaRegion[];
   metadataObservations?: string[];
   limitations?: string;
   finalVerdict?: string;
@@ -63,6 +74,26 @@ const impactLabel: Record<string, string> = {
   unclear: "Unclear",
 };
 
+const severityStyles = {
+  high: {
+    box: "border-destructive bg-destructive/20",
+    chip: "bg-destructive text-destructive-foreground",
+    badge: "bg-destructive/10 text-destructive border-destructive/30",
+  },
+  medium: {
+    box: "border-warning bg-warning/20",
+    chip: "bg-warning/90 text-warning-foreground",
+    badge: "bg-warning/10 text-warning border-warning/30",
+  },
+  low: {
+    box: "border-primary bg-primary/20",
+    chip: "bg-primary/90 text-primary-foreground",
+    badge: "bg-primary/10 text-primary border-primary/30",
+  },
+} as const;
+
+const severityLabel = { high: "High", medium: "Medium", low: "Low" } as const;
+
 interface MediaAnalysisResultProps {
   result: MediaAnalysisResultData;
   imageUrl?: string;
@@ -77,6 +108,7 @@ const MediaAnalysisResult = ({ result, imageUrl }: MediaAnalysisResultProps) => 
 
   const findings = result.findings ?? [];
   const metadataObservations = result.metadataObservations ?? [];
+  const regions = result.regions ?? [];
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -100,8 +132,30 @@ const MediaAnalysisResult = ({ result, imageUrl }: MediaAnalysisResultProps) => 
         </CardHeader>
         <CardContent className="space-y-5">
           {imageUrl && (
-            <div className="rounded-xl border border-border/60 overflow-hidden bg-muted/20">
-              <img src={imageUrl} alt="Analysed image" className="max-h-80 w-full object-contain" />
+            <div className="rounded-xl border border-border/60 bg-muted/20 p-2">
+              <div className="relative mx-auto w-fit">
+                <img src={imageUrl} alt="Analysed image" className="max-h-80 w-auto rounded-lg" />
+                {regions.map((r, i) => {
+                  const style = severityStyles[r.severity ?? "medium"] ?? severityStyles.medium;
+                  return (
+                    <div
+                      key={i}
+                      className="absolute"
+                      style={{ left: `${r.x}%`, top: `${r.y}%`, width: `${r.width}%`, height: `${r.height}%` }}
+                    >
+                      <div className={`absolute inset-0 border-2 rounded ${style.box}`} />
+                      <span className={`absolute -top-2.5 left-1 -translate-y-full whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] font-semibold ${style.chip}`}>
+                        {r.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              {regions.length > 0 && (
+                <p className="text-xs text-muted-foreground text-center mt-2 mb-1">
+                  Highlighted areas are the AI's best estimate of where editing may have occurred — approximate, not exact.
+                </p>
+              )}
             </div>
           )}
 
@@ -146,6 +200,34 @@ const MediaAnalysisResult = ({ result, imageUrl }: MediaAnalysisResultProps) => 
                 <p className="text-sm text-muted-foreground">{finding.detail}</p>
               </div>
             ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Regions flagged */}
+      {regions.length > 0 && (
+        <Card className="glass-card border-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <ScanSearch className="h-5 w-5 text-primary" />
+              Areas we flagged on the image
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {regions.map((r, i) => {
+              const style = severityStyles[r.severity ?? "medium"] ?? severityStyles.medium;
+              return (
+                <div key={i} className="p-4 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-semibold text-sm">{r.label}</p>
+                    <Badge variant="outline" className={style.badge}>
+                      {severityLabel[r.severity ?? "medium"]} concern
+                    </Badge>
+                  </div>
+                  {r.detail && <p className="text-sm text-muted-foreground">{r.detail}</p>}
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
       )}

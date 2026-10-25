@@ -22,6 +22,7 @@ export type Database = {
           input_text: string | null
           input_url: string | null
           key_phrases: string[] | null
+          regions: Json | null
           result: string
           user_id: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           input_text?: string | null
           input_url?: string | null
           key_phrases?: string[] | null
+          regions?: Json | null
           result: string
           user_id: string
         }
@@ -42,6 +44,7 @@ export type Database = {
           input_text?: string | null
           input_url?: string | null
           key_phrases?: string[] | null
+          regions?: Json | null
           result?: string
           user_id?: string
         }

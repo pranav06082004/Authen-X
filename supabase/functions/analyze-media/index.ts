@@ -14,6 +14,7 @@ CORE RULES
 3. The file metadata summary (if any) was extracted programmatically by AuthenX from the actual file. Treat it as ground truth. Its absence is a WEAK signal only: social networks, messengers and screenshots routinely strip all metadata. Never treat "no metadata" alone as evidence of manipulation.
 4. You have NO live web access. Never invent sources, reverse-image-search results, or fact-check findings. If you cannot tell, say UNCERTAIN.
 5. Most ordinary, natural photos without visible anomalies deserve AUTHENTIC only with moderate confidence, and anything ambiguous deserves UNCERTAIN.
+6. REGION LOCALIZATION: when you can actually point at suspicious areas, report them as bounding boxes. Coordinates are approximate percentages of the image size (0-100), with x,y the top-left corner and width/height the box size. Only include a region when you can reasonably locate the anomaly; never return a box covering the whole image unless the anomaly is genuinely global. For a clean AUTHENTIC image, or when you cannot localize anything, return an empty array. Never invent precise boundaries.
 
 CONFIDENCE CALIBRATION (0-100)
 - 85-95: only when anomalies are clear, multiple and mutually reinforcing (e.g. obvious splicing seams plus inconsistent shadows).
@@ -30,6 +31,9 @@ Return ONLY a JSON object with exactly these keys:
   "summary": string,               // 1-2 plain sentences a non-expert understands
   "findings": [                    // 2-4 items
     { "title": string, "detail": string, "impact": "supports_authentic" | "supports_manipulated" | "unclear" }
+  ],
+  "regions": [                     // suspicious areas you can actually locate, up to 4; empty array when none
+    { "label": string, "detail": string, "x": number, "y": number, "width": number, "height": number, "severity": "low" | "medium" | "high" }
   ],
   "metadataObservations": string[], // what the file metadata does or does not tell us, honestly; may be empty
   "limitations": string,           // what you could not check and why
@@ -273,11 +277,28 @@ serve(async (req) => {
             schema: {
               type: 'object',
               additionalProperties: false,
-              required: ['verdict', 'confidence', 'summary', 'findings', 'metadataObservations', 'limitations', 'finalVerdict'],
+              required: ['verdict', 'confidence', 'summary', 'findings', 'regions', 'metadataObservations', 'limitations', 'finalVerdict'],
               properties: {
                 verdict: { type: 'string', enum: ['AUTHENTIC', 'LIKELY_MANIPULATED', 'UNCERTAIN'] },
                 confidence: { type: 'number' },
                 summary: { type: 'string' },
+                regions: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    additionalProperties: false,
+                    required: ['label', 'detail', 'x', 'y', 'width', 'height', 'severity'],
+                    properties: {
+                      label: { type: 'string' },
+                      detail: { type: 'string' },
+                      x: { type: 'number' },
+                      y: { type: 'number' },
+                      width: { type: 'number' },
+                      height: { type: 'number' },
+                      severity: { type: 'string', enum: ['low', 'medium', 'high'] },
+                    },
+                  },
+                },
                 findings: {
                   type: 'array',
                   items: {

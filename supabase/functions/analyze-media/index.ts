@@ -393,6 +393,7 @@ serve(async (req) => {
       confidence: clampConfidence(verdict, ai.confidence),
       summary: typeof ai.summary === 'string' ? ai.summary : '',
       findings: Array.isArray(ai.findings) ? ai.findings.slice(0, 4) : [],
+      regions: sanitizeRegions(ai.regions),
       metadataObservations: Array.isArray(ai.metadataObservations) ? ai.metadataObservations.slice(0, 6) : [],
       limitations: typeof ai.limitations === 'string'
         ? ai.limitations
@@ -419,6 +420,7 @@ serve(async (req) => {
           result: result.verdict,
           confidence: result.confidence,
           key_phrases: result.findings.map((f: any) => f.title).filter(Boolean).slice(0, 4),
+          regions: result.regions,
         });
         if (insertError) console.error('Error saving analysis:', insertError);
       }

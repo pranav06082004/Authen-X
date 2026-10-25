@@ -182,6 +182,35 @@ function clampConfidence(verdict: string, raw: unknown): number {
   return c;
 }
 
+function clampPct(raw: unknown): number {
+  const v = typeof raw === 'number' && isFinite(raw) ? raw : 0;
+  return Math.max(0, Math.min(100, Math.round(v)));
+}
+
+function sanitizeRegions(raw: unknown): { label: string; detail: string; x: number; y: number; width: number; height: number; severity: string }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((r: any) => {
+      const x = clampPct(r?.x);
+      const y = clampPct(r?.y);
+      let width = clampPct(r?.width);
+      let height = clampPct(r?.height);
+      if (x + width > 100) width = 100 - x;
+      if (y + height > 100) height = 100 - y;
+      return {
+        label: typeof r?.label === 'string' ? r.label.slice(0, 80) : 'Suspicious area',
+        detail: typeof r?.detail === 'string' ? r.detail.slice(0, 300) : '',
+        x,
+        y,
+        width,
+        height,
+        severity: ['low', 'medium', 'high'].includes(r?.severity) ? r.severity : 'medium',
+      };
+    })
+    .filter((r) => r.width > 1 && r.height > 1)
+    .slice(0, 6);
+}
+
 // ---------- SSE consumption of /v1/responses ----------
 
 async function readResponsesStream(res: Response): Promise<string> {

@@ -12,10 +12,11 @@
 - [x] Storage access rules fixed (upload previously blocked for all users)
 - [x] Verified live: upload → analysis → result card → saved to history
 
-## Phase 2 — Suspicious Region Highlighting (planned)
-- [ ] Ask the model for bounding boxes of suspicious regions
-- [ ] Overlay boxes/highlight on the image in the result card
-- [ ] Store region data alongside the analysis
+## Phase 2 — Suspicious Region Highlighting (in progress)
+- [x] Ask the model for bounding boxes of suspicious regions
+- [x] Overlay boxes/highlight on the image in the result card (color-coded by severity)
+- [x] Store region data alongside the analysis (`analyses.regions`)
+- [ ] End-to-end test with a doctored image
 
 ## Phase 3 — Image-vs-Story Consistency (planned)
 - [ ] Combine news text + image in one analysis

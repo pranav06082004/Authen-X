@@ -204,6 +204,34 @@ const MediaAnalysisResult = ({ result, imageUrl }: MediaAnalysisResultProps) => 
         </Card>
       )}
 
+      {/* Regions flagged */}
+      {regions.length > 0 && (
+        <Card className="glass-card border-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <ScanSearch className="h-5 w-5 text-primary" />
+              Areas we flagged on the image
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {regions.map((r, i) => {
+              const style = severityStyles[r.severity ?? "medium"] ?? severityStyles.medium;
+              return (
+                <div key={i} className="p-4 rounded-lg border border-border/60 bg-muted/20 space-y-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-semibold text-sm">{r.label}</p>
+                    <Badge variant="outline" className={style.badge}>
+                      {severityLabel[r.severity ?? "medium"]} concern
+                    </Badge>
+                  </div>
+                  {r.detail && <p className="text-sm text-muted-foreground">{r.detail}</p>}
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Metadata */}
       <Card className="glass-card border-2">
         <CardHeader>

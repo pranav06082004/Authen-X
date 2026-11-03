@@ -34,15 +34,15 @@ const checkAuthService = async () => {
   }
 };
 
-const waitForAuthService = async () => {
-  const delays = [0, 350, 900, 1600];
-
-  for (const delay of delays) {
-    if (delay > 0) await new Promise((resolve) => window.setTimeout(resolve, delay));
+const waitForAuthService = async (maxWaitMs = 75000, intervalMs = 3000) => {
+  // The backend can take around a minute to wake up after the site opens;
+  // wait patiently instead of giving up after a few seconds.
+  const startedAt = Date.now();
+  while (true) {
     if (await checkAuthService()) return true;
+    if (Date.now() - startedAt >= maxWaitMs) return false;
+    await new Promise((resolve) => window.setTimeout(resolve, intervalMs));
   }
-
-  return false;
 };
 
 const isTransientAuthError = (error: { name?: string; status?: number }) =>
@@ -63,8 +63,19 @@ const Auth = () => {
   // Check if user came from password reset link (query param, hash, or auth event)
   useEffect(() => {
     let isMounted = true;
+    let recoveryTimer: number | undefined;
     void checkAuthService().then((isReady) => {
-      if (isMounted) setAuthConnection(isReady ? "ready" : "unavailable");
+      if (!isMounted) return;
+      setAuthConnection(isReady ? "ready" : "unavailable");
+      if (!isReady) {
+        // The sign-in service may be waking up — keep checking quietly
+        // and connect automatically as soon as it responds.
+        recoveryTimer = window.setInterval(async () => {
+          if (isMounted && (await checkAuthService())) {
+            setAuthConnection("ready");
+          }
+        }, 5000);
+      }
     });
 
     const type = searchParams.get("type");

@@ -12,11 +12,17 @@
 - [x] Storage access rules fixed (upload previously blocked for all users)
 - [x] Verified live: upload → analysis → result card → saved to history
 
-## Phase 2 — Suspicious Region Highlighting (in progress)
+## Phase 2 — Suspicious Region Highlighting ✅ (tested end-to-end)
 - [x] Ask the model for bounding boxes of suspicious regions
 - [x] Overlay boxes/highlight on the image in the result card (color-coded by severity)
 - [x] Store region data alongside the analysis (`analyses.regions`)
-- [ ] End-to-end test with a doctored image
+- [x] Verified live: doctored test image → "Likely Doctored" verdict with highlighted region
+
+## Sign-in reliability fix (Nov 2026)
+- [x] "Temporarily unavailable" was the backend waking up after the site opens (~1 min restart)
+- [x] Sign-in/Google sign-in now wait up to 75s for the service instead of failing in ~3s
+- [x] Page keeps reconnecting in the background and connects automatically
+- [x] Verified: auth service responds to credential checks again
 
 ## Phase 3 — Image-vs-Story Consistency (planned)
 - [ ] Combine news text + image in one analysis

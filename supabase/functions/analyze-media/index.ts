@@ -177,6 +177,8 @@ async function fetchImage(url: string): Promise<{ bytes: Uint8Array; mime: strin
 
 function clampConfidence(verdict: string, raw: unknown): number {
   let c = typeof raw === 'number' && isFinite(raw) ? raw : 50;
+  // Some models answer on a 0-1 scale instead of 0-100 — normalise.
+  if (c <= 1) c = c * 100;
   c = Math.max(0, Math.min(95, Math.round(c)));
   if (verdict === 'UNCERTAIN') c = Math.min(c, 70);
   return c;

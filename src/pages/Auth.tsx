@@ -90,7 +90,11 @@ const Auth = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      if (recoveryTimer) window.clearInterval(recoveryTimer);
+      subscription.unsubscribe();
+    };
   }, [searchParams]);
 
   const prepareAuthService = async () => {
@@ -117,6 +121,14 @@ const Auth = () => {
   const handleOAuthSignIn = async (provider: 'google') => {
     setOauthLoading(provider);
     try {
+      // Google sign-in also needs the auth service awake first.
+      const serviceReady = await prepareAuthService();
+      if (!serviceReady) {
+        toast.error("Google sign-in is temporarily unavailable. Please try again in a moment.");
+        setOauthLoading(null);
+        return;
+      }
+
       const result = await lovable.auth.signInWithOAuth(provider, {
         // Keep OAuth on a public callback so the provider can return reliably.
         // The callback route sends an authenticated user to the dashboard.
@@ -572,7 +584,7 @@ const Auth = () => {
                   <p role="status" className="mb-4 text-center text-xs text-muted-foreground">
                     {authConnection === "checking"
                       ? "Connecting to secure sign-in…"
-                      : "Sign-in is temporarily unreachable. We’ll check again when you continue."}
+                      : "Reconnecting to the sign-in service — we'll connect automatically, usually within a minute."}
                   </p>
                 )}
 

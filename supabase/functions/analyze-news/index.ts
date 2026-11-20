@@ -1,49 +1,37 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { GatewayError, generateChatCompletion } from 'npm:@lovable.dev/ai-gateway@0.1.11';
+import { isTimeSensitiveNews, normalizeNewsAnalysis } from './analysis.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SYSTEM_PROMPT = `You are a careful, evidence-first misinformation analyst. Your job is to judge whether a piece of news content is likely REAL, likely FAKE, or UNCERTAIN.
+const SYSTEM_PROMPT = `You are a careful, evidence-first misinformation analyst. Classify a news claim as REAL, FAKE, or UNCERTAIN.
 
-CORE RULES
-1. Judge claims, not style. Emotional wording, capitalisation, grammar mistakes, clickbait tone or poor writing are WEAK supporting signals only. They must NEVER be the main reason for a FAKE verdict. Real reporting is often badly written; disinformation is often well written.
-2. Base the verdict primarily on the verifiability, plausibility, internal consistency and specificity of the factual claims (who, what, where, when, numbers, named sources, official bodies).
-3. You have NO live web access in this request. You may only use the provided text plus your own general knowledge, which has a training cutoff and may be outdated. Say this plainly. Never state that a claim was "verified" by a source you did not actually consult.
-4. NEVER invent sources, URLs, quotes, statistics, fact-check articles, dates or organisations. If you have no evidence, say you have none.
-5. Be calibrated, not confident. Use UNCERTAIN whenever the claims are recent, niche, unverifiable from the text, or you simply do not know. Most single pieces of text without external verification deserve UNCERTAIN.
+IMPORTANT LIMITATION: You do not have live web search or access to current news in this request. Your general knowledge may be outdated. Never say or imply that you checked current sources, and never invent citations, source names, URLs, quotes, dates, or reports.
 
-CONFIDENCE CALIBRATION (0-100)
-- 85-95: only when the content matches very well-established public knowledge, or contains claims that are impossible/contradicted by well-established facts.
-- 65-84: strong indicators one way, but no independent verification.
-- 40-64: mixed or weak signals -> normally UNCERTAIN.
-- 0-39: almost no basis to judge -> UNCERTAIN.
-Never exceed 95. Never exceed 80 for events you cannot verify from your own knowledge.
+RULES
+1. Judge factual claims, not style. Tone, grammar, capitalization, and clickbait wording are weak signals only and must never decide a FAKE verdict.
+2. Use UNCERTAIN for recent, time-sensitive, niche, or otherwise unverified claims. In particular, do not reject a death, resignation, arrest, election, appointment, injury, or other recent event just because it conflicts with your stored knowledge.
+3. A death report or other current event cannot be called false merely because older biographical information says the person was alive. State that it needs current verification.
+4. Never invent evidence. Keep verifiedFacts empty unless the fact is stable and genuinely known; describe the absence of live sources in limitations.
+5. Keep confidence calibrated: 85-95 only for established facts or clear contradictions in stable facts; never exceed 80 for claims not live-verified; UNCERTAIN confidence must not exceed 70.
 
-OUTPUT
 Return ONLY a JSON object with exactly these keys:
 {
   "verdict": "REAL" | "FAKE" | "UNCERTAIN",
   "confidence": number,
-  "summary": string,              // 1-2 plain sentences a non-expert understands
-  "reasons": [                    // 2-4 items
-    { "title": string, "detail": string, "impact": "supports_real" | "supports_fake" | "unclear" }
-  ],
-  "claims": [                     // the most important factual claims found in the input, up to 5
-    { "claim": string, "status": "credible" | "suspicious" | "misleading" | "unverifiable", "note": string }
-  ],
-  "evidence": {
-    "verifiedFacts": string[],    // things you actually know to be true; empty array if none
-    "assumptions": string[],      // inferences you made; be honest
-    "limitations": string         // what you could not check and why
-  },
-  "keyPhrases": string[],         // up to 6 short phrases from the input that drove the analysis
-  "styleSignals": string[],       // weak stylistic observations, explicitly secondary; may be empty
-  "finalVerdict": string          // short, direct, simple-language conclusion for a normal user
+  "summary": string,
+  "reasons": [{ "title": string, "detail": string, "impact": "supports_real" | "supports_fake" | "unclear" }],
+  "claims": [{ "claim": string, "status": "credible" | "suspicious" | "misleading" | "unverifiable", "note": string }],
+  "evidence": { "verifiedFacts": string[], "assumptions": string[], "limitations": string },
+  "keyPhrases": string[],
+  "styleSignals": string[],
+  "finalVerdict": string
 }
-No markdown, no extra text.`;
+No markdown or extra text.`;
 
 async function fetchArticle(url: string): Promise<string | null> {
   try {
@@ -61,124 +49,84 @@ async function fetchArticle(url: string): Promise<string | null> {
       .replace(/\s+/g, ' ')
       .trim();
     return text.slice(0, 12000) || null;
-  } catch (_e) {
+  } catch {
     return null;
   }
 }
 
-function clampConfidence(verdict: string, raw: unknown): number {
-  let c = typeof raw === 'number' && isFinite(raw) ? raw : 50;
-  c = Math.max(0, Math.min(95, Math.round(c)));
-  if (verdict === 'UNCERTAIN') c = Math.min(c, 70);
-  return c;
+function errorResponse(message: string, status = 500) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+  if (req.method !== 'POST') return errorResponse('Method not allowed', 405);
 
   try {
-    const { text, url } = await req.json();
+    const body = await req.json();
+    const text = typeof body?.text === 'string' ? body.text.trim().slice(0, 20000) : '';
+    const url = typeof body?.url === 'string' ? body.url.trim() : '';
 
-    if ((!text || !String(text).trim()) && (!url || !String(url).trim())) {
-      return new Response(
-        JSON.stringify({ error: 'Either text or url is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    if (!text && !url) return errorResponse('Either text or url is required', 400);
+    if (url) {
+      try {
+        const parsed = new URL(url);
+        if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return errorResponse('Please provide a valid article URL', 400);
+      } catch {
+        return errorResponse('Please provide a valid article URL', 400);
+      }
     }
 
     let sourceNote = '';
-    let content = String(text ?? '').trim();
-
+    let content = text;
     if (url) {
-      const fetched = await fetchArticle(String(url));
+      const fetched = await fetchArticle(url);
       if (fetched) {
-        sourceNote = `The following text was fetched from the URL ${url}. Treat the domain as a weak signal only.`;
+        sourceNote = `The user supplied this article URL (${url}); its text is included below. Reading this single page is not independent confirmation of the claims.`;
         content = `${fetched}${content ? `\n\nUser-provided context:\n${content}` : ''}`;
       } else {
-        sourceNote = `The page at ${url} could NOT be fetched, so you have not seen its content. Do not guess what it says. Unless the user also provided text, the correct verdict is UNCERTAIN with low confidence.`;
+        sourceNote = `The page at ${url} could not be fetched. You have not seen its content; do not guess what it says.`;
       }
     }
 
-    const userPrompt = `${sourceNote ? sourceNote + '\n\n' : ''}Analyse the following news content (headline and body) for factual credibility.\n\n---\n${content || '(no readable content available)'}\n---`;
+    const timeSensitive = isTimeSensitiveNews(`${content}\n${url}`);
+    const userPrompt = `${sourceNote ? `${sourceNote}\n\n` : ''}${timeSensitive
+      ? 'TIME-SENSITIVE CLAIM SAFETY: This input includes a recent or changeable event. You have no live sources. Return UNCERTAIN, use confidence 45 or lower, mark the claim unverifiable, and clearly say current independent reporting is needed. Do not call the claim false based on outdated knowledge.\n\n'
+      : ''}Assess the factual credibility of this news content.\n\n---\n${content || '(no readable article content available)'}\n---`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-3.5-flash',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: userPrompt },
-        ],
-        response_format: { type: 'json_object' },
-      }),
+    const response = await generateChatCompletion({
+      model: 'google/gemini-3.5-flash',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: userPrompt },
+      ],
+      response_format: { type: 'json_object' },
     });
 
-    if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI credits exhausted. Please add more credits.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      const body = await response.text();
-      console.error('AI gateway error', response.status, body);
-      throw new Error(`AI gateway error: ${response.status}`);
-    }
+    const messageContent = response.choices[0]?.message.content;
+    if (!messageContent) return errorResponse('The analysis service returned an empty result. Please try again.', 502);
 
-    const aiData = await response.json();
-    let ai: any;
+    let ai: unknown;
     try {
-      ai = JSON.parse(aiData.choices[0].message.content);
-    } catch (_e) {
-      throw new Error('Could not read the analysis result. Please try again.');
+      ai = JSON.parse(messageContent);
+    } catch {
+      return errorResponse('Could not read the analysis result. Please try again.', 502);
     }
 
-    const verdict = ['REAL', 'FAKE', 'UNCERTAIN'].includes(ai.verdict) ? ai.verdict : 'UNCERTAIN';
-    const result = {
-      verdict,
-      confidence: clampConfidence(verdict, ai.confidence),
-      summary: typeof ai.summary === 'string' ? ai.summary : '',
-      reasons: Array.isArray(ai.reasons) ? ai.reasons.slice(0, 4) : [],
-      claims: Array.isArray(ai.claims) ? ai.claims.slice(0, 5) : [],
-      evidence: {
-        verifiedFacts: Array.isArray(ai.evidence?.verifiedFacts) ? ai.evidence.verifiedFacts : [],
-        assumptions: Array.isArray(ai.evidence?.assumptions) ? ai.evidence.assumptions : [],
-        limitations: typeof ai.evidence?.limitations === 'string'
-          ? ai.evidence.limitations
-          : 'This analysis is based only on the text provided and the model\'s general knowledge. No live sources were consulted.',
-      },
-      keyPhrases: Array.isArray(ai.keyPhrases) ? ai.keyPhrases.slice(0, 6) : [],
-      styleSignals: Array.isArray(ai.styleSignals) ? ai.styleSignals.slice(0, 4) : [],
-      finalVerdict: typeof ai.finalVerdict === 'string' ? ai.finalVerdict : '',
-      liveSourcesUsed: false,
-    };
+    const result = normalizeNewsAnalysis(ai, `${content}\n${url}`);
 
-    // Persist for the signed-in user (best effort)
+    // Save only a user-scoped summary; the raw article is never sent to the client as a citation.
     const authHeader = req.headers.get('Authorization');
     if (authHeader) {
       const supabase = createClient(
         Deno.env.get('SUPABASE_URL')!,
         Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-        { auth: { autoRefreshToken: false, persistSession: false } }
+        { auth: { autoRefreshToken: false, persistSession: false } },
       );
-      const token = authHeader.replace('Bearer ', '');
+      const token = authHeader.replace(/^Bearer\s+/i, '');
       const { data: { user } } = await supabase.auth.getUser(token);
       if (user) {
         const { error: insertError } = await supabase.from('analyses').insert({
@@ -198,10 +146,12 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in analyze-news function:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    if (error instanceof GatewayError) {
+      if (error.httpStatus === 429) return errorResponse('The analysis service is busy. Please wait a moment before trying again.', 429);
+      if (error.httpStatus === 402) return errorResponse('AI credits are unavailable right now. Please contact the site owner.', 402);
+      if (error.httpStatus === 401 || error.httpStatus === 403) return errorResponse('The analysis service is not configured correctly. Please contact the site owner.', 502);
+      return errorResponse('The analysis service could not complete this request. Please try again later.', 502);
+    }
+    return errorResponse('We could not analyze this content right now. Please try again later.');
   }
 });

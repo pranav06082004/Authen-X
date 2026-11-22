@@ -32,3 +32,8 @@
 - [ ] EfficientNet/ConvNeXt manipulation classifier trained on CASIA/Columbia-style datasets
 - [ ] Host externally (e.g. Hugging Face Inference API), call from the edge function
 - [ ] Evaluate precision/recall/F1/ROC-AUC for the project report
+
+## Recent-news accuracy improvement (in progress)
+- [ ] Ground news analysis in live Google Search results and show checked article links
+- [ ] Force uncertain, low-confidence results when recent claims lack two independent, fresh sources
+- [ ] Verify old knowledge cannot label a recent death report false

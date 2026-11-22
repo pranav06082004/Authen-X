@@ -10,6 +10,7 @@ import {
   ListChecks,
   BookOpen,
   Quote,
+  ExternalLink,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
@@ -28,6 +29,7 @@ export interface AnalysisResultData {
   styleSignals?: string[];
   finalVerdict?: string;
   liveSourcesUsed?: boolean;
+  sources?: { title: string; url: string; publishedAt?: string | null }[];
 }
 
 const verdictConfig = {
@@ -257,6 +259,39 @@ const AnalysisResult = ({ result }: { result: AnalysisResultData }) => {
           </CardHeader>
           <CardContent>
             <p className="text-sm leading-relaxed">{result.finalVerdict}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {result.sources && result.sources.length > 0 && (
+        <Card className="glass-card border-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <ExternalLink className="h-5 w-5 text-primary" />
+              Current search results
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs text-muted-foreground">
+              These article links were checked for availability. Read the original reports before relying on the result.
+            </p>
+            {result.sources.map((source, index) => (
+              <div key={`${source.url}-${index}`} className="flex flex-col gap-1 border-b border-border/60 pb-3 last:border-b-0 last:pb-0">
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-words text-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+                >
+                  {source.title}
+                </a>
+                <span className="text-xs text-muted-foreground">
+                  {source.publishedAt && !Number.isNaN(Date.parse(source.publishedAt))
+                    ? `Published ${new Date(source.publishedAt).toLocaleDateString()}`
+                    : "Publication date not available"}
+                </span>
+              </div>
+            ))}
           </CardContent>
         </Card>
       )}

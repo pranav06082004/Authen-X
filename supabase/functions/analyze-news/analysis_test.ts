@@ -18,13 +18,14 @@ Deno.test('recent death claims without two independent sources are uncertain', (
 });
 
 Deno.test('recent claims need corroboration from distinct publishers', () => {
+  const recentDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   const result = normalizeNewsAnalysis({
     verdict: 'REAL',
     confidence: 91,
     searchAssessment: 'corroborated',
     sources: [
-      { title: 'Report one', url: 'https://www.publisher-one.example/news', publishedAt: '2026-11-14' },
-      { title: 'Report two', url: 'https://publisher-two.example/news', publishedAt: '2026-11-14' },
+      { title: 'Report one', url: 'https://www.publisher-one.example/news', publishedAt: recentDate },
+      { title: 'Report two', url: 'https://publisher-two.example/news', publishedAt: recentDate },
     ],
   }, 'The actor died yesterday.');
 
@@ -34,17 +35,34 @@ Deno.test('recent claims need corroboration from distinct publishers', () => {
 });
 
 Deno.test('search-engine pages and duplicate publishers are not source corroboration', () => {
+  const recentDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   const result = normalizeNewsAnalysis({
     verdict: 'FAKE',
     confidence: 93,
     searchAssessment: 'corroborated',
     sources: [
-      { title: 'Search results', url: 'https://news.google.com/search?q=claim', publishedAt: '2026-11-14' },
-      { title: 'Publisher story', url: 'https://publisher.example/story', publishedAt: '2026-11-14' },
-      { title: 'Same publisher', url: 'https://www.publisher.example/another-story', publishedAt: '2026-11-14' },
+      { title: 'Search results', url: 'https://news.google.com/search?q=claim', publishedAt: recentDate },
+      { title: 'Publisher story', url: 'https://publisher.example/story', publishedAt: recentDate },
+      { title: 'Same publisher', url: 'https://www.publisher.example/another-story', publishedAt: recentDate },
     ],
   }, 'Breaking: a public figure died today.');
 
   assertEquals(result.verdict, 'UNCERTAIN');
   assertEquals(result.sources.length, 1);
+});
+
+Deno.test('old articles cannot corroborate a recent event', () => {
+  const staleDate = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const result = normalizeNewsAnalysis({
+    verdict: 'FAKE',
+    confidence: 90,
+    searchAssessment: 'corroborated',
+    sources: [
+      { title: 'Old report one', url: 'https://publisher-one.example/old', publishedAt: staleDate },
+      { title: 'Old report two', url: 'https://publisher-two.example/old', publishedAt: staleDate },
+    ],
+  }, 'The actor died yesterday.');
+
+  assertEquals(result.verdict, 'UNCERTAIN');
+  assertEquals(result.sources.length, 0);
 });

@@ -24,6 +24,7 @@ export interface NormalizedNewsAnalysis {
 
 const RECENT_EVENT_PATTERN = /\b(?:today|tonight|this morning|this evening|yesterday|last night|last week|recently|recent|breaking|just now|some days ago|a few days ago|died|dead|death|deceased|passed away|is alive|still alive|resigned|arrested|detained|elected|appointed|announced|launched|acquired|fired|dismissed|injured|killed|missing)\b/i;
 const SEARCH_ENGINE_HOSTS = ['google.com', 'bing.com', 'yahoo.com', 'duckduckgo.com'];
+const MULTI_PART_PUBLIC_SUFFIXES = new Set(['co.uk', 'org.uk', 'ac.uk', 'com.au', 'net.au', 'org.au', 'co.in', 'firm.in', 'net.in', 'org.in', 'com.br', 'com.mx', 'com.sg', 'com.my', 'com.ph', 'com.pk', 'co.za', 'co.nz', 'co.jp', 'com.tr', 'com.ng']);
 
 export function isTimeSensitiveNews(text: string): boolean {
   return RECENT_EVENT_PATTERN.test(text);
@@ -44,7 +45,11 @@ function normalizeSources(value: unknown): SourceReference[] {
       const parsed = new URL(candidate.url);
       const host = parsed.hostname.toLowerCase();
       if (parsed.protocol !== 'https:' || !host || SEARCH_ENGINE_HOSTS.some((blocked) => host === blocked || host.endsWith(`.${blocked}`))) continue;
-      if (seenHosts.has(host)) continue;
+      const normalizedHost = host.replace(/^(www|m|mobile|edition|amp)\./, '');
+      const hostParts = normalizedHost.split('.');
+      const suffix = hostParts.slice(-2).join('.');
+      const publisher = hostParts.slice(-(MULTI_PART_PUBLIC_SUFFIXES.has(suffix) ? 3 : 2)).join('.');
+      if (seenHosts.has(publisher)) continue;
 
       const publishedAt = typeof candidate.publishedAt === 'string' && !Number.isNaN(Date.parse(candidate.publishedAt))
         ? candidate.publishedAt.slice(0, 40)
@@ -54,7 +59,7 @@ function normalizeSources(value: unknown): SourceReference[] {
         url: parsed.toString(),
         publishedAt,
       });
-      seenHosts.add(host);
+      seenHosts.add(publisher);
       if (sources.length >= 6) break;
     } catch {
       // Discard malformed source links rather than showing untrusted URLs.
@@ -74,7 +79,14 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
   const rawEvidence = ai.evidence && typeof ai.evidence === 'object' ? ai.evidence as Record<string, unknown> : {};
   const sources = normalizeSources(ai.sources);
   const timeSensitive = isTimeSensitiveNews(input);
-  const corroborated = ai.searchAssessment === 'corroborated' && sources.length >= 2;
+  const recentCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const freshSources = sources.filter((source) => {
+    if (!source.publishedAt) return false;
+    const publishedTime = Date.parse(source.publishedAt);
+    return Number.isFinite(publishedTime) && publishedTime >= recentCutoff && publishedTime <= Date.now() + 24 * 60 * 60 * 1000;
+  });
+  const corroborationSources = timeSensitive ? freshSources : sources;
+  const corroborated = ai.searchAssessment === 'corroborated' && corroborationSources.length >= 2;
   const needsAbstention = timeSensitive && !corroborated;
   const allowedVerdicts = ['REAL', 'FAKE', 'UNCERTAIN'] as const;
   const suggestedVerdict = typeof ai.verdict === 'string' && allowedVerdicts.includes(ai.verdict as typeof allowedVerdicts[number])
@@ -92,7 +104,7 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
       if (!item || typeof item !== 'object') return [];
       const reason = item as Record<string, unknown>;
       if (typeof reason.title !== 'string' || typeof reason.detail !== 'string') return [];
-      const impact = reason.impact === 'supports_real' || reason.impact === 'supports_fake' ? reason.impact : 'unclear';
+      const impact: 'supports_real' | 'supports_fake' | 'unclear' = reason.impact === 'supports_real' || reason.impact === 'supports_fake' ? reason.impact : 'unclear';
       return [{ title: reason.title, detail: reason.detail, impact }];
     })
     : [];
@@ -101,7 +113,7 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
     reasons.unshift({
       title: 'Recent claim needs current confirmation',
       detail: 'The live search did not return at least two independent, usable news-source links supporting the same conclusion. We will not label a recent event true or false without that evidence.',
-      impact: 'unclear',
+      impact: 'unclear' as const,
     });
   }
 
@@ -150,7 +162,7 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
     finalVerdict: needsAbstention
       ? 'Uncertain — we could not confirm this recent claim with enough independent current sources.'
       : typeof ai.finalVerdict === 'string' ? ai.finalVerdict : summary,
-    sources,
-    liveSourcesUsed: sources.length > 0,
+    sources: timeSensitive ? freshSources : sources,
+    liveSourcesUsed: (timeSensitive ? freshSources : sources).length > 0,
   };
 }

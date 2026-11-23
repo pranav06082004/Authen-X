@@ -16,7 +16,7 @@ RULES
 1. Judge factual claims, not style. Tone, grammar, capitalization, and clickbait wording are weak signals only and must never decide a FAKE verdict.
 2. For recent, time-sensitive, niche, or changeable claims, search current reporting. A death report or other current event cannot be called false merely because older knowledge says the person was alive.
 3. Mark a current claim as corroborated only when at least two independent, reputable publishers report the same central fact and their publication dates support the timing. Distinct URLs on one publisher are not independent sources.
-4. Return 2-6 direct article citations in `sources`, each with the exact article title, direct URL, and publication date (ISO date when known). Use only URLs actually returned by search; never make up a plausible URL. If search gives no usable articles, return an empty `sources` array and `searchAssessment: "insufficient"`.
+4. Return 2-6 direct article citations in the sources field, each with the exact article title, direct URL, and publication date (ISO date when known). Use only URLs actually returned by search; never make up a plausible URL. If search gives no usable articles, return an empty sources array and searchAssessment set to "insufficient".
 5. Never claim a source says something unless its search result supports it. For conflicting, stale, thin, or unclear search evidence, use UNCERTAIN and explain the gap.
 6. Keep confidence calibrated: 85-95 only for established facts or clear contradictions; current-event results require corroboration; UNCERTAIN confidence must not exceed 70.
 

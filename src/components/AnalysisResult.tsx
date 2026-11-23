@@ -308,7 +308,7 @@ const AnalysisResult = ({ result }: { result: AnalysisResultData }) => {
                   "This analysis is based only on the text you provided and the AI's general knowledge."}{" "}
                 {result.liveSourcesUsed
                   ? ""
-                  : "No live web search was used, so recent events cannot be confirmed."}{" "}
+                  : "No checked current articles were available, so recent claims cannot be confirmed."}{" "}
                 Treat this as a helpful signal, not a final truth — verify important claims with official or well-known news sources.
               </p>
             </div>

@@ -33,7 +33,8 @@
 - [ ] Host externally (e.g. Hugging Face Inference API), call from the edge function
 - [ ] Evaluate precision/recall/F1/ROC-AUC for the project report
 
-## Recent-news accuracy improvement (in progress)
-- [ ] Ground news analysis in live Google Search results and show checked article links
-- [ ] Force uncertain, low-confidence results when recent claims lack two independent, fresh sources
-- [ ] Verify old knowledge cannot label a recent death report false
+## Recent-news accuracy improvement
+- [x] Ground news analysis in live Google Search results and show checked article links
+- [x] Force uncertain, low-confidence results when recent claims lack two independent, fresh sources
+- [x] Verify old knowledge cannot label a recent death report false
+- [ ] Run a signed-in recent-news example in preview (blocked: temporary test sign-in was declined)

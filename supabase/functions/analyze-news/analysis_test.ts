@@ -34,6 +34,23 @@ Deno.test('recent claims need corroboration from distinct publishers', () => {
   assertEquals(result.sources.length, 2);
 });
 
+Deno.test('untimed historical death claims can use older independent reports', () => {
+  const result = normalizeNewsAnalysis({
+    verdict: 'REAL',
+    confidence: 94,
+    searchAssessment: 'corroborated',
+    sources: [
+      { title: 'Dharmendra dies at 89', url: 'https://www.bbc.com/news/articles/dharmendra-death', publishedAt: '2025-11-24' },
+      { title: 'Bollywood actor Dharmendra dies at 89', url: 'https://www.theglobeandmail.com/culture/film/dharmendra-death/', publishedAt: '2025-11-24' },
+    ],
+  }, 'Actor Dharmendra has died.');
+
+  assertEquals(result.verdict, 'REAL');
+  assertEquals(result.confidence, 94);
+  assertEquals(result.sources.length, 2);
+  assertEquals(result.liveSourcesUsed, true);
+});
+
 Deno.test('search-engine pages and duplicate publishers are not source corroboration', () => {
   const recentDate = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   const result = normalizeNewsAnalysis({

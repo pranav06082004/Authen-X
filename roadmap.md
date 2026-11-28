@@ -37,4 +37,5 @@
 - [x] Ground news analysis in live Google Search results and show checked article links
 - [x] Force uncertain, low-confidence results when recent claims lack two independent, fresh sources
 - [x] Verify old knowledge cannot label a recent death report false
-- [ ] Run a signed-in recent-news example in preview (blocked: temporary test sign-in was declined)
+- [x] Separate explicit recent timing from untimed historical facts; keep two independent verified sources for both
+- [x] Run a signed-in recent-news example in preview: Dharmendra death claim returned REAL with dated sources

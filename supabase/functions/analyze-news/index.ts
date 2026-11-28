@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { GatewayError, generateChatCompletion } from 'npm:@lovable.dev/ai-gateway@0.1.13';
-import { isTimeSensitiveNews, normalizeNewsAnalysis, type SourceReference } from './analysis.ts';
+import { isTimeSensitiveNews, normalizeNewsAnalysis, requiresFreshNewsSources, type SourceReference } from './analysis.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -14,9 +14,9 @@ Use the built-in Google Search tool for claims that need current information. Yo
 
 RULES
 1. Judge factual claims, not style. Tone, grammar, capitalization, and clickbait wording are weak signals only and must never decide a FAKE verdict.
-2. For recent, time-sensitive, niche, or changeable claims, search current reporting. A death report or other current event cannot be called false merely because older knowledge says the person was alive.
-3. Mark a current claim as corroborated only when at least two independent, reputable publishers report the same central fact and their publication dates support the timing. Distinct URLs on one publisher are not independent sources.
-4. Return 2-6 direct article citations in the sources field, each with the exact article title, direct URL, and publication date (ISO date when known). Use only URLs actually returned by search; never make up a plausible URL. If search gives no usable articles, return an empty sources array and searchAssessment set to "insufficient".
+2. For recent, time-sensitive, niche, or changeable claims, search current reporting. A death report or other current event cannot be called false merely because older knowledge says the person was alive. Do not treat an untimed statement about a death or other established event as breaking news solely because it contains an event word.
+3. For claims that explicitly say an event happened today, yesterday, recently, or within a stated recent period, corroboration requires at least two independent, reputable publishers whose recent publication dates support that timing. For an untimed historical event, older reports remain valid evidence; still require at least two independent, reputable publishers reporting the same central fact. Distinct URLs on one publisher are not independent sources.
+4. Return 2-6 direct article citations in the sources field, each with the exact article title, direct URL, and publication date (ISO date when known). Use only URLs actually returned by search; never make up a plausible URL. For explicit recent-timing claims, prefer current articles; for untimed historical facts, cite the original historical reporting. If search gives no usable articles, return an empty sources array and searchAssessment set to "insufficient".
 5. Never claim a source says something unless its search result supports it. For conflicting, stale, thin, or unclear search evidence, use UNCERTAIN and explain the gap.
 6. Keep confidence calibrated: 85-95 only for established facts or clear contradictions; current-event results require corroboration; UNCERTAIN confidence must not exceed 70.
 
@@ -221,10 +221,15 @@ serve(async (req) => {
       }
     }
 
-    const timeSensitive = isTimeSensitiveNews(`${content}\n${url}`);
-    const userPrompt = `${sourceNote ? `${sourceNote}\n\n` : ''}${timeSensitive
-      ? 'TIME-SENSITIVE CLAIM SAFETY: Search current reporting before judging this claim. Never call it false because it conflicts with older knowledge. If fewer than two independent, recent article results support the same conclusion, return UNCERTAIN, use confidence 45 or lower, and explain what could not be confirmed.\n\n'
-      : ''}Assess the factual credibility of this news content.\n\n---\n${content || '(no readable article content available)'}\n---`;
+    const analysisText = `${content}\n${url}`;
+    const timeSensitive = isTimeSensitiveNews(analysisText);
+    const freshnessRequired = requiresFreshNewsSources(analysisText);
+    const sourceInstruction = freshnessRequired
+      ? 'CURRENT-TIMING CLAIM SAFETY: Search current reporting before judging this claim. Never call it false because it conflicts with older knowledge. If fewer than two independent, recent article results support the stated timing, return UNCERTAIN, use confidence 45 or lower, and explain what could not be confirmed.\n\n'
+      : timeSensitive
+        ? 'TIME-SENSITIVE FACT CHECK: Search the web and return at least two independent, direct article citations. If the input does not explicitly say the event is happening today or recently, treat an established event (including a reported death) as a historical fact: older reputable articles may corroborate it. Do not require articles from the last 30 days solely because the claim contains words such as “died” or “death.” If two independent article citations are unavailable, return UNCERTAIN and explain that source links are missing.\n\n'
+        : '';
+    const userPrompt = `${sourceNote ? `${sourceNote}\n\n` : ''}${sourceInstruction}Assess the factual credibility of this news content.\n\n---\n${content || '(no readable article content available)'}\n---`;
 
     const response = await generateChatCompletion({
       model: 'google/gemini-3.5-flash',

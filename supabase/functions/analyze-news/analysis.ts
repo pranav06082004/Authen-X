@@ -23,11 +23,16 @@ export interface NormalizedNewsAnalysis {
 }
 
 const RECENT_EVENT_PATTERN = /\b(?:today|tonight|this morning|this evening|yesterday|last night|last week|recently|recent|breaking|just now|some days ago|a few days ago|died|dead|death|deceased|passed away|is alive|still alive|resigned|arrested|detained|elected|appointed|announced|launched|acquired|fired|dismissed|injured|killed|missing)\b/i;
+const EXPLICIT_RECENT_TIMING_PATTERN = /\b(?:today|tonight|this morning|this evening|yesterday|last night|last week|this week|last month|this month|recently|recent|breaking|just now|right now|currently|as of now|at present|some days ago|a few days ago|in the last (?:few|several|\d+) (?:hours?|days?|weeks?)|over the last (?:few|several|\d+) (?:hours?|days?|weeks?)|last \d+ (?:hours?|days?|weeks?))\b/i;
 const SEARCH_ENGINE_HOSTS = ['google.com', 'bing.com', 'yahoo.com', 'duckduckgo.com'];
 const MULTI_PART_PUBLIC_SUFFIXES = new Set(['co.uk', 'org.uk', 'ac.uk', 'com.au', 'net.au', 'org.au', 'co.in', 'firm.in', 'net.in', 'org.in', 'com.br', 'com.mx', 'com.sg', 'com.my', 'com.ph', 'com.pk', 'co.za', 'co.nz', 'co.jp', 'com.tr', 'com.ng']);
 
 export function isTimeSensitiveNews(text: string): boolean {
   return RECENT_EVENT_PATTERN.test(text);
+}
+
+export function requiresFreshNewsSources(text: string): boolean {
+  return EXPLICIT_RECENT_TIMING_PATTERN.test(text);
 }
 
 function normalizeSources(value: unknown): SourceReference[] {
@@ -79,13 +84,14 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
   const rawEvidence = ai.evidence && typeof ai.evidence === 'object' ? ai.evidence as Record<string, unknown> : {};
   const sources = normalizeSources(ai.sources);
   const timeSensitive = isTimeSensitiveNews(input);
+  const freshnessRequired = requiresFreshNewsSources(input);
   const recentCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
   const freshSources = sources.filter((source) => {
     if (!source.publishedAt) return false;
     const publishedTime = Date.parse(source.publishedAt);
     return Number.isFinite(publishedTime) && publishedTime >= recentCutoff && publishedTime <= Date.now() + 24 * 60 * 60 * 1000;
   });
-  const corroborationSources = timeSensitive ? freshSources : sources;
+  const corroborationSources = freshnessRequired ? freshSources : sources;
   const corroborated = ai.searchAssessment === 'corroborated' && corroborationSources.length >= 2;
   const needsAbstention = timeSensitive && !corroborated;
   const allowedVerdicts = ['REAL', 'FAKE', 'UNCERTAIN'] as const;
@@ -94,7 +100,7 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
     : 'UNCERTAIN';
   const verdict = needsAbstention ? 'UNCERTAIN' : suggestedVerdict;
   const rawConfidence = typeof ai.confidence === 'number' && Number.isFinite(ai.confidence) ? ai.confidence : 35;
-  const confidenceLimit = verdict === 'UNCERTAIN' ? 70 : timeSensitive ? 80 : 95;
+  const confidenceLimit = verdict === 'UNCERTAIN' ? 70 : freshnessRequired ? 80 : 95;
   const confidence = needsAbstention
     ? Math.min(45, Math.max(0, Math.round(rawConfidence)))
     : Math.max(0, Math.min(confidenceLimit, Math.round(rawConfidence)));
@@ -111,8 +117,10 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
 
   if (needsAbstention) {
     reasons.unshift({
-      title: 'Recent claim needs current confirmation',
-      detail: 'The live search did not return at least two independent, usable news-source links supporting the same conclusion. We will not label a recent event true or false without that evidence.',
+      title: freshnessRequired ? 'Recent claim needs current confirmation' : 'Claim needs independent source confirmation',
+      detail: freshnessRequired
+        ? 'The live search did not return at least two independent, usable recent news-source links supporting the stated timing. We will not label a current event true or false without that evidence.'
+        : 'The analysis did not include at least two independently verified article links supporting this claim. Older reports can confirm historical events, but we will not label it true or false without those sources.',
       impact: 'unclear' as const,
     });
   }
@@ -131,17 +139,23 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
       return [{
         claim: claim.claim,
         status,
-        note: needsAbstention ? 'Not confirmed by enough independent, usable current sources.' : typeof claim.note === 'string' ? claim.note : '',
+         note: needsAbstention
+           ? freshnessRequired ? 'Not confirmed by enough independent, recent sources.' : 'Not confirmed by enough independent, verified article sources.'
+           : typeof claim.note === 'string' ? claim.note : '',
       }];
     })
     : [];
 
   const fallbackSummary = 'There is not enough reliable evidence to confidently classify this news.';
   const summary = needsAbstention
-    ? 'This is a time-sensitive claim, and the current source links do not independently confirm it. We cannot responsibly label it true or false yet.'
+    ? freshnessRequired
+      ? 'This claim includes recent timing, but the available current source links do not independently confirm it. We cannot responsibly label it true or false yet.'
+      : 'There are not enough independently verified article links to confirm this claim. We cannot responsibly label it true or false yet.'
     : typeof ai.summary === 'string' ? ai.summary : fallbackSummary;
   const limitations = needsAbstention
-    ? 'This claim may have changed recently. Fewer than two independent, usable news-source links supported a clear conclusion, so this result is intentionally uncertain.'
+    ? freshnessRequired
+      ? 'This claim may have changed recently. Fewer than two independent, usable recent news-source links supported a clear conclusion, so this result is intentionally uncertain.'
+      : 'Fewer than two independently verified article links supported a clear conclusion. This result is intentionally uncertain until those sources are available.'
     : typeof rawEvidence.limitations === 'string'
       ? rawEvidence.limitations
       : 'This is an AI assessment. Check the linked source references before relying on the result.';
@@ -160,9 +174,11 @@ export function normalizeNewsAnalysis(raw: unknown, input: string): NormalizedNe
     keyPhrases: stringList(ai.keyPhrases, 6),
     styleSignals: stringList(ai.styleSignals, 4),
     finalVerdict: needsAbstention
-      ? 'Uncertain — we could not confirm this recent claim with enough independent current sources.'
+      ? freshnessRequired
+        ? 'Uncertain — we could not confirm this recent claim with enough independent current sources.'
+        : 'Uncertain — we could not confirm this claim with enough independent article sources.'
       : typeof ai.finalVerdict === 'string' ? ai.finalVerdict : summary,
-    sources: timeSensitive ? freshSources : sources,
-    liveSourcesUsed: (timeSensitive ? freshSources : sources).length > 0,
+    sources: freshnessRequired ? freshSources : sources,
+    liveSourcesUsed: (freshnessRequired ? freshSources : sources).length > 0,
   };
 }
